@@ -412,33 +412,30 @@ const DATA = {
     { id: "pol", name_th: "การเมือง", xAxis: "mod_rad", yAxis: "polz_apol", left: "ปานกลาง", right: "ถอนราก", top: "การเมืองเข้มข้น", bottom: "ไม่ยุ่งการเมือง" }
   ],
   heatMapPoints: [
-    { name: "อนุรักษนิยมใหม่", x: 25, y: 15 },
-    { name: "อนุรักษนิยมดั้งเดิม", x: 10, y: 30 },
-    { name: "อนุรักษนิยม", x: 20, y: 40 },
-    { name: "เสรีนิยมคลาสสิก", x: 55, y: -45 },
-    { name: "เสรีนิยมใหม่", x: 60, y: -25 },
-    { name: "เสรีภาพนิยมฝ่ายขวา", x: 80, y: -75 },
-    { name: "สังคมนิยมประชาธิปไตย", x: -55, y: -35 },
-    { name: "สังคมนิยมตลาด", x: -30, y: -15 },
-    { name: "สังคมนิยม", x: -75, y: 0 },
-    { name: "คอมมิวนิสต์/เลนินนิสต์", x: -85, y: 70 },
-    { name: "อนาร์โค-คอมมิวนิสต์", x: -80, y: -85 },
-    { name: "เทคโนเครซี", x: 0, y: 50 },
-    { name: "ประชานิยมฝ่ายขวา", x: 30, y: 65 },
-    { name: "ทุนนิยมอำนาจนิยม", x: 70, y: 75 }
+    { name: "อนุรักษนิยมใหม่", name_en: "Neoconservatism", x: 25, y: 15, blurb: "เน้นการรักษาเสถียรภาพทางสังคม ทุนนิยมกลไกตลาด และความเข้มแข็งของสถาบันหลัก" },
+    { name: "อนุรักษนิยมดั้งเดิม", name_en: "Traditional Conservatism", x: 10, y: 30, blurb: "ยึดมั่นในจารีตประเพณี ระเบียบสังคมดั้งเดิม และสถาบันทางศาสนา/ครอบครัว" },
+    { name: "อนุรักษนิยมสายกลาง", name_en: "Moderate Conservatism", x: 20, y: 40, blurb: "เน้นการเปลี่ยนแปลงแบบ постепен ปรับตัวตามยุคสมัยโดยรักษารากฐานเดิม" },
+    { name: "เสรีนิยมคลาสสิก", name_en: "Classical Liberalism", x: 55, y: -45, blurb: "เน้นเสรีภาพปัจเจก รัฐขนาดเล็ก และระบบเศรษฐกิจตลาดเสรีเชิงกลไก" },
+    { name: "เสรีนิยมใหม่", name_en: "Neoliberalism", x: 60, y: -25, blurb: "เน้นการแปรรูปเป็นของเอกชน การค้าเสรี และการลดบทบาทรัฐในการกำกับตลาด" },
+    { name: "เสรีภาพนิยมฝ่ายขวา", name_en: "Right-Libertarianism", x: 80, y: -75, blurb: "ชูเสรีภาพส่วนบุคคลสูงสุดและปฏิเสธการแทรกแซงทุกรูปแบบจากรัฐ" },
+    { name: "สังคมนิยมประชาธิปไตย", name_en: "Social Democracy", x: -55, y: -35, blurb: "เน้นประชาธิปไตยควบคู่รัฐสวัสดิการและการลดความเหลื่อมล้ำทางเศรษฐกิจ" },
+    { name: "สังคมนิยมตลาด", name_en: "Market Socialism", x: -30, y: -15, blurb: "ผสมผสานการครอบครองปัจจัยการผลิตโดยสาธารณะเข้ากับกลไกตลาดการแข่งขัน" },
+    { name: "สังคมนิยม", name_en: "Socialism", x: -75, y: 0, blurb: "เน้นการเป็นเจ้าของทรัพยากรร่วมกันและการวางแผนเศรษฐกิจเพื่อประโยชน์ส่วนรวม" },
+    { name: "คอมมิวนิสต์/เลนินนิสต์", name_en: "Marxism-Leninism", x: -85, y: 70, blurb: "ใช้รัฐนำการเปลี่ยนแปลง ปรับโครงสร้างชนชั้น และวางแผนเศรษฐกิจเบ็ดเสร็จ" },
+    { name: "อนาร์โค-คอมมิวนิสต์", name_en: "Anarcho-Communism", x: -80, y: -85, blurb: "ไร้รัฐ ไร้ชนชั้น ร่วมมือกันอย่างสมัครใจและกระจายทรัพยากรตามความจำเป็น" },
+    { name: "เทคโนเครซี", name_en: "Technocracy", x: 0, y: 50, blurb: "ใช้ผู้เชี่ยวชาญ ข้อมูลทางวิชาการ และวิทยาศาสตร์ในการบริหารจัดการประเทศ" },
+    { name: "ประชานิยมฝ่ายขวา", name_en: "Right-Wing Populism", x: 30, y: 65, blurb: "ชูชาตินิยม ต่อต้านสถาบันสากล และยึดค่านิยมจารีตดั้งเดิม" },
+    { name: "ทุนนิยมอำนาจนิยม", name_en: "Authoritarian Capitalism", x: 70, y: 75, blurb: "เปิดเสรีทางเศรษฐกิจแต่ควบคุมการเมือง สิทธิเสรีภาพอย่างเข้มงวด" }
   ],
   philosophers: [
     { id: "locke", name_th: "จอห์น ล็อก (John Locke)", quote: "สิทธิในชีวิต เสรีภาพ และทรัพย์สิน เป็นสิทธิธรรมชาติของมนุษย์ทุกคน", desc: "คุณเน้นย้ำเรื่องเสรีภาพส่วนบุคคล สิทธิในทรัพย์สินอันชอบธรรม และมองว่ารัฐมีหน้าที่จำกัดเพื่อปกป้องสิทธิเท่านั้น", profile: { soc_cap: 80, auth_lib: 20, merit_eq: 20 } },
     { id: "rawls", name_th: "จอห์น รอลส์ (John Rawls)", quote: "ความยุติธรรมคือความเท่าเทียม โดยสังคมต้องสร้างกติกาที่โอบอุ้มผู้เสียเปรียบเสมอ", desc: "คุณยึดมั่นในประชาธิปไตยเสรีนิยมที่ควบคู่ไปกับสวัสดิการสังคมและการโอบอุ้มผู้ด้อยโอกาส", profile: { soc_cap: 35, auth_lib: 30, merit_eq: 75 } },
     { id: "hobbes", name_th: "โธมัส ฮอบส์ (Thomas Hobbes)", quote: "หากปราศจากรัฐที่เข้มแข็ง ชีวิตมนุษย์จะวุ่นวาย โดดเดี่ยว และสั้นนัก", desc: "คุณให้ความสำคัญกับความสงบเรียบร้อย อำนาจรัฐที่เด็ดขาด และการรวมศูนย์เพื่อป้องกันความวุ่นวาย", profile: { soc_cap: 60, auth_lib: 85, merit_eq: 40 } },
     { id: "marx", name_th: "คาร์ล มาร์กซ์ (Karl Marx)", quote: "ประวัติศาสตร์สังคมที่ผ่านมา คือประวัติศาสตร์ของการต่อสู้ทางชนชั้น", desc: "คุณมองเห็นโครงสร้างความเหลื่อมล้ำของระบบทุนนิยม และมุ่งหวังการเปลี่ยนแปลงเพื่อความเท่าเทียมอย่างแท้จริง", profile: { soc_cap: 0, auth_lib: 50, merit_eq: 100 } }
-  ],
-  ideologies: [
-    { id: "neocons", name_th: "อนุรักษนิยมใหม่", name_en: "Neoconservatism", blurb_th: "เน้นการรักษาเสถียรภาพทางสังคม ทุนนิยมกลไกตลาด และความเข้มแข็งของสถาบันหลัก" }
   ]
 };
 
-// FULL 260 UNIFIED QUESTIONS DATASET (10 Explicit Unique Questions per Axis)
+// FULL 260 UNIFIED QUESTIONS DATASET
 const rawQuestionsData = [
   // 1. soc_cap
   { cat: 1, axis: "soc_cap", tag: "SOC", pole: "a", text: "ผลงานและความสำเร็จที่มนุษย์สร้างขึ้น ควรถูกแบ่งปันเพื่อโอบอุ้มคนที่อ่อนแอกว่าในสังคมเสมอ" },
@@ -764,35 +761,7 @@ DATA.axes.forEach(ax => {
   tagMap[ax.pole_a.tag] = { axisId: ax.id, pole: 'a' };
   tagMap[ax.pole_b.tag] = { axisId: ax.id, pole: 'b' };
 });
-function encodeAnswers(ansObj) {
-  const keys = Object.keys(ansObj);
-  const total = keys.length ? Math.max(...keys.map(Number), 260) : 260;
-  const bytes = new Uint8Array(total);
-  for (let i = 1; i <= total; i++) {
-    const val = ansObj[i] !== undefined ? ansObj[i] : 0;
-    bytes[i - 1] = val + 3; // แมปช่วงคะแนน -3 ถึง 3 ให้เป็น 0 ถึง 6
-  }
-  let binary = '';
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
-function decodeAnswers(str) {
-  try {
-    let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
-    while (base64.length % 4) base64 += '=';
-    const binary = atob(base64);
-    const ans = {};
-    for (let i = 0; i < binary.length; i++) {
-      ans[i + 1] = binary.charCodeAt(i) - 3; // แมปค่า 0 ถึง 6 กลับเป็น -3 ถึง 3
-    }
-    return ans;
-  } catch (e) {
-    console.error("Decode error:", e);
-    return null;
-  }
-}
+
 function calculateAxisScores(userAns) {
   const acc = {};
   DATA.axes.forEach(ax => { acc[ax.id] = []; });
@@ -821,6 +790,99 @@ function calculateAxisScores(userAns) {
   const radicalismPct = Math.round((radicalCount / 26) * 100);
 
   return { pcts, consistencyScore, radicalismPct };
+}
+
+function encodeAnswers(ansObj) {
+  const total = 260;
+  const bytes = new Uint8Array(total);
+  for (let i = 1; i <= total; i++) {
+    const val = ansObj[i] !== undefined ? ansObj[i] : 0;
+    bytes[i - 1] = val + 3; // แปลงช่วงคะแนน -3 ถึง 3 เป็น 0 ถึง 6
+  }
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function decodeAnswers(str) {
+  try {
+    let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+    while (base64.length % 4) base64 += '=';
+    const binary = atob(base64);
+    const ans = {};
+    for (let i = 0; i < binary.length; i++) {
+      ans[i + 1] = binary.charCodeAt(i) - 3; // ถอดรหัสกลับเป็นช่วงคะแนน -3 ถึง 3
+    }
+    return ans;
+  } catch (e) {
+    return null;
+  }
+}
+
+// MATCHING ALGORITHMS
+function getMatchingIdeology(pcts) {
+  const userSocCap = pcts['soc_cap'] !== undefined ? pcts['soc_cap'] : 50;
+  const userAuthLib = pcts['auth_lib'] !== undefined ? pcts['auth_lib'] : 50;
+
+  const scoreX = (userSocCap - 50) * 2; // -100 to 100 (Socialism to Capitalism)
+  const scoreY = (50 - userAuthLib) * 2; // -100 to 100 (Libertarianism to Authoritarianism)
+
+  let closest = DATA.heatMapPoints[0];
+  let minDistance = Infinity;
+
+  DATA.heatMapPoints.forEach(pt => {
+    const dist = Math.sqrt(Math.pow(scoreX - pt.x, 2) + Math.pow(scoreY - pt.y, 2));
+    if (dist < minDistance) {
+      minDistance = dist;
+      closest = pt;
+    }
+  });
+
+  return closest;
+}
+
+function getMatchingPhilosopher(pcts) {
+  let closest = DATA.philosophers[0];
+  let minDistance = Infinity;
+
+  DATA.philosophers.forEach(ph => {
+    const dSoc = Math.pow((pcts['soc_cap'] || 50) - ph.profile.soc_cap, 2);
+    const dAuth = Math.pow((pcts['auth_lib'] || 50) - ph.profile.auth_lib, 2);
+    const dMerit = Math.pow((pcts['merit_eq'] || 50) - ph.profile.merit_eq, 2);
+    const dist = Math.sqrt(dSoc + dAuth + dMerit);
+
+    if (dist < minDistance) {
+      minDistance = dist;
+      closest = ph;
+    }
+  });
+
+  return closest;
+}
+
+function detectInternalTensions(pcts) {
+  const tensions = [];
+
+  // Tension 1: สังคมนิยมแต่สนับสนุนตลาดปล่อยเสรีอย่างสุดขั้ว
+  if (pcts['soc_cap'] < 40 && pcts['pln_mkt'] > 65) {
+    tensions.push("คุณต้องการการกระจายทรัพยากรแบบสังคมนิยม แต่สนับสนุนกลไกตลาดเสรีโดยไม่ให้รัฐกำกับดูแล");
+  }
+  // Tension 2: ประชาธิปไตยแต่เน้นย้ำอำนาจนิยมเบ็ดเสร็จ
+  if (pcts['dem_autc'] > 60 && pcts['auth_lib'] < 35) {
+    tensions.push("คุณสนับสนุนระบบสถาบันประชาธิปไตย แต่ในขณะเดียวกันก็ยอมรับการใช้อำนาจรัฐควบคุมเสรีภาพประชาชนอย่างเข้มงวด");
+  }
+  // Tension 3: ชาตินิยมแต่สนับสนุนโลกาภิวัตน์เสรี
+  if (pcts['glob_nat'] > 65 && pcts['univ_part'] < 35) {
+    tensions.push("คุณยึดถือผลประโยชน์ชาติและพรมแดนเป็นหลัก แต่เปิดรับสากลนิยมและสิทธิมนุษยชนแบบไม่มีเงื่อนไข");
+  }
+  // Tension 4: ก้าวหน้าแต่ต่อต้านการเร่งพัฒนาเทคโนโลยี
+  if (pcts['prog_trad'] < 35 && pcts['acc_dec'] > 65) {
+    tensions.push("คุณมีค่านิยมสังคมก้าวหน้าเปิดรับสิ่งใหม่ แต่กลับมีความกังวลและต้องการชะลอการเติบโตทางเทคโนโลยี");
+  }
+
+  return tensions;
 }
 
 // DRAWING FUNCTIONS
@@ -1029,16 +1091,13 @@ document.getElementById('resume-btn').onclick = () => {
 
 // Action 1: Copy Link
 document.getElementById('share-btn').onclick = () => {
-  const url = window.location.href;
-  if(navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(url).then(() => {
-      showToast("คัดลอกลิงก์ผลลัพธ์เรียบร้อยแล้ว!");
-    }).catch(() => {
-      prompt("คัดลอกลิงก์นี้เพื่อแชร์:", url);
-    });
-  } else {
-    prompt("คัดลอกลิงก์นี้เพื่อแชร์:", url);
-  }
+  const hash = encodeAnswers(answers);
+  const shareUrl = `${window.location.origin}${window.location.pathname}#d=${hash}`;
+  navigator.clipboard.writeText(shareUrl).then(() => {
+    showToast("คัดลอกลิงก์ผลลัพธ์เรียบร้อยแล้ว!");
+  }).catch(() => {
+    prompt("คัดลอกลิงก์นี้เพื่อแชร์:", shareUrl);
+  });
 };
 
 // Action 2: Print / PDF
@@ -1057,6 +1116,7 @@ document.getElementById('retake-btn').onclick = () => {
 };
 
 function finishSurvey() {
+  localStorage.removeItem('pcs_260_full_draft'); // ลบร่างค้างเมื่อทำจบแล้ว
   const { pcts, consistencyScore, radicalismPct } = calculateAxisScores(answers);
   renderResults(pcts, consistencyScore, radicalismPct);
   showView(resultView);
@@ -1091,43 +1151,40 @@ function renderResults(pcts, consistencyScore, radicalismPct) {
   const heatCanvas = document.getElementById('heatmap-canvas');
   drawHeatmap(heatCanvas, pcts);
 
-  // Render Philosopher
-  const philo = DATA.philosophers[0];
+  // Render Dynamic Ideology Match
+  const matchIdeo = getMatchingIdeology(pcts);
+  document.getElementById('match-name-th').innerText = matchIdeo.name;
+  document.getElementById('match-name-en').innerText = matchIdeo.name_en;
+  document.getElementById('match-blurb').innerText = matchIdeo.blurb;
+
+  // Render Dynamic Philosopher Match
+  const philo = getMatchingPhilosopher(pcts);
   document.getElementById('philo-name').innerText = philo.name_th;
   document.getElementById('philo-quote').innerText = `"${philo.quote}"`;
   document.getElementById('philo-desc').innerText = philo.desc;
 
-  // Render Ideology
-  const ideo = DATA.ideologies[0];
-  document.getElementById('match-name-th').innerText = ideo.name_th;
-  document.getElementById('match-name-en').innerText = ideo.name_en;
-  document.getElementById('match-blurb').innerText = ideo.blurb_th;
-document.getElementById('share-btn').onclick = () => {
-  const hash = encodeAnswers(answers);
-  const shareUrl = `${window.location.origin}${window.location.pathname}#d=${hash}`;
-  navigator.clipboard.writeText(shareUrl).then(() => {
-    const toast = document.getElementById('toast');
-    toast.style.display = 'block';
-    setTimeout(() => toast.style.display = 'none', 2500);
-  });
-};
-window.onload = () => {
-  const hash = window.location.hash;
-  if (hash && hash.startsWith('#d=')) {
-    const encoded = hash.replace('#d=', '');
-    const decodedAnswers = decodeAnswers(encoded);
-    if (decodedAnswers) {
-      answers = decodedAnswers;
-      finishSurvey();
-      return;
-    }
+  // Render Internal Tension
+  const tensionsContainer = document.getElementById('tensions-container');
+  tensionsContainer.innerHTML = '';
+  const tensions = detectInternalTensions(pcts);
+  if (tensions.length > 0) {
+    tensions.forEach(t => {
+      const box = document.createElement('div');
+      box.className = 'tension-box';
+      box.innerText = `• ${t}`;
+      tensionsContainer.appendChild(box);
+    });
+  } else {
+    const box = document.createElement('div');
+    box.style.color = '#15803d';
+    box.style.background = '#f0fdf4';
+    box.style.padding = '16px';
+    box.style.borderRadius = '8px';
+    box.style.border = '1px solid #bbf7d0';
+    box.innerText = "ไม่พบจุดย้อนแย้งเชิงตรรกะที่เด่นชัด ระบบคิดของคุณมีความสอดคล้องสูงในทุกมิติ";
+    tensionsContainer.appendChild(box);
   }
 
-const draft = localStorage.getItem('pcs_260_full_draft');
-  if (draft) {
-    document.getElementById('resume-btn').style.display = 'block';
-  }
-};
   // Render Bars Spectrum
   const barsContainer = document.getElementById('bars-container');
   barsContainer.innerHTML = '';
@@ -1151,8 +1208,22 @@ const draft = localStorage.getItem('pcs_260_full_draft');
 }
 
 window.onload = () => {
+  // ตรวจสอบรหัสผลลัพธ์จาก URL (#d=...)
+  const hash = window.location.hash;
+  if (hash && hash.startsWith('#d=')) {
+    const encoded = hash.replace('#d=', '');
+    const decodedAnswers = decodeAnswers(encoded);
+    if (decodedAnswers) {
+      answers = decodedAnswers;
+      finishSurvey();
+      return;
+    }
+  }
+  // ตรวจสอบร่างแบบสำรวจที่ทำค้างไว้
   const draft = localStorage.getItem('pcs_260_full_draft');
-  if(draft) { document.getElementById('resume-btn').style.display = 'block'; }
+  if (draft) {
+    document.getElementById('resume-btn').style.display = 'block';
+  }
 };
 
 </script>
