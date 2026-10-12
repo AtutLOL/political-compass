@@ -764,7 +764,54 @@ DATA.axes.forEach(ax => {
   tagMap[ax.pole_a.tag] = { axisId: ax.id, pole: 'a' };
   tagMap[ax.pole_b.tag] = { axisId: ax.id, pole: 'b' };
 });
+function encodeAnswers(ansObj) {
+  const total = Object.keys(ansObj).length || 260;
+  const arr = new Uint8Array(total);
+  for (let i = 1; i <= total; i++) {
+    arr[i - 1] = (ansObj[i] !== undefined ? ansObj[i] : 0) + 3;
+  }
+  const bytes = new Uint8Array(Math.ceil((total * 3) / 8));
+  let bitIdx = 0;
+  for (let i = 0; i < total; i++) {
+    const val = arr[i] & 0x07;
+    const bytePos = Math.floor(bitIdx / 8);
+    const bitOffset = bitIdx % 8;
+    bytes[bytePos] |= (val << bitOffset);
+    if (bitOffset > 5 && bytePos + 1 < bytes.length) {
+      bytes[bytePos + 1] |= (val >> (8 - bitOffset));
+    }
+    bitIdx += 3;
+  }
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function decodeAnswers(str) {
+  try {
+    let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+    while (base64.length % 4) base64 += '=';
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
 
+    const ans = {};
+    let bitIdx = 0;
+    const totalQ = Math.floor((binary.length * 8) / 3);
+    for (let i = 1; i <= totalQ; i++) {
+      const bytePos = Math.floor(bitIdx / 8);
+      const bitOffset = bitIdx % 8;
+      let val = (bytes[bytePos] >> bitOffset) & 0x07;
+      if (bitOffset > 5 && bytePos + 1 < bytes.length) {
+        val |= (bytes[bytePos + 1] << (8 - bitOffset)) & 0x07;
+      }
+      ans[i] = val - 3;
+      bitIdx += 3;
+    }
+    return ans;
+  } catch (e) {
+    return null;
+  }
+}
 function calculateAxisScores(userAns) {
   const acc = {};
   DATA.axes.forEach(ax => { acc[ax.id] = []; });
@@ -1074,7 +1121,32 @@ function renderResults(pcts, consistencyScore, radicalismPct) {
   document.getElementById('match-name-th').innerText = ideo.name_th;
   document.getElementById('match-name-en').innerText = ideo.name_en;
   document.getElementById('match-blurb').innerText = ideo.blurb_th;
+document.getElementById('share-btn').onclick = () => {
+  const hash = encodeAnswers(answers);
+  const shareUrl = `${window.location.origin}${window.location.pathname}#d=${hash}`;
+  navigator.clipboard.writeText(shareUrl).then(() => {
+    const toast = document.getElementById('toast');
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 2500);
+  });
+};
+window.onload = () => {
+  const hash = window.location.hash;
+  if (hash && hash.startsWith('#d=')) {
+    const encoded = hash.replace('#d=', '');
+    const decodedAnswers = decodeAnswers(encoded);
+    if (decodedAnswers) {
+      answers = decodedAnswers;
+      finishSurvey();
+      return;
+    }
+  }
 
+  const draft = localStorage.getItem('pcs_260_full_draft');
+  if (draft) {
+    document.getElementById('resume-btn').style.display = 'block';
+  }
+};
   // Render Bars Spectrum
   const barsContainer = document.getElementById('bars-container');
   barsContainer.innerHTML = '';
@@ -1101,6 +1173,7 @@ window.onload = () => {
   const draft = localStorage.getItem('pcs_260_full_draft');
   if(draft) { document.getElementById('resume-btn').style.display = 'block'; }
 };
+
 </script>
 </body>
 </html>
