@@ -6,7 +6,7 @@
   <title>แบบสำรวจปรัชญาและอุดมการณ์ทางการเมือง 260 ข้อ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #1b365d;
@@ -29,9 +29,10 @@
       line-height: 1.6;
       padding: 16px;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    .container { max-width: 960px; margin: 0 auto; }
+    .container { max-width: 960px; margin: 0 auto; position: relative; }
 
     header {
       text-align: center;
@@ -51,6 +52,93 @@
       box-shadow: var(--shadow);
       margin-bottom: 24px;
       border: 1px solid var(--border);
+    }
+
+    /* Side Drawer Navigation */
+    .drawer {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 320px;
+      height: 100vh;
+      background: #ffffff;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+    }
+    .drawer.open { left: 0; }
+
+    .drawer-toggle-btn {
+      position: absolute;
+      top: 20px;
+      right: -44px;
+      width: 44px;
+      height: 48px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 0 8px 8px 0;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 3px 2px 8px rgba(0,0,0,0.2);
+      transition: background-color 0.2s;
+    }
+    .drawer-toggle-btn:hover { background: var(--primary-hover); }
+
+    .drawer-header {
+      padding: 16px 20px;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      font-size: 1.05rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .drawer-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+    }
+
+    .drawer-q-item {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      transition: all 0.15s ease;
+      background: #f8fafc;
+    }
+    .drawer-q-item:hover { background: #e2e8f0; }
+    .drawer-q-item.active {
+      border-left: 4px solid var(--accent);
+      background: #eff6ff;
+    }
+    .drawer-q-item.answered {
+      background: #f0fdf4;
+      border-right: 4px solid #16a34a;
+    }
+
+    .q-item-num { font-weight: 700; font-size: 0.85rem; color: var(--primary); }
+    .q-item-text { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+    
+    /* Highlight badge in drawer for answered state */
+    .ans-highlight-tag {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
     /* Buttons */
@@ -112,27 +200,47 @@
       font-weight: 600;
       margin-bottom: 28px;
       text-align: center;
-      min-height: 80px;
+      min-height: 90px;
       display: flex;
       align-items: center;
       justify-content: center;
-      line-height: 1.5;
+      line-height: 1.6;
+      padding: 0 10px;
     }
     .options-grid { display: flex; flex-direction: column; gap: 10px; }
     .option-btn {
       min-height: 48px;
       padding: 12px 16px;
-      border: 1px solid rgba(0,0,0,0.1);
+      border: 2px solid transparent;
       border-radius: 8px;
       font-size: 0.95rem;
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
+      transition: all 0.15s ease;
       text-align: center;
       width: 100%;
+      position: relative;
     }
-    .option-btn:hover { opacity: 0.9; }
+    .option-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    
+    /* Prominent Highlight for Previous Answer */
+    .option-btn.selected-prev {
+      outline: 3px solid #0f172a;
+      outline-offset: 2px;
+      transform: scale(1.02);
+      font-weight: 800;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+    .option-btn.selected-prev::after {
+      content: "✓ เลือกไว้แล้ว";
+      position: absolute;
+      right: 14px;
+      font-size: 0.8rem;
+      background: rgba(0,0,0,0.3);
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
 
     .nav-buttons { display: flex; gap: 12px; margin-top: 24px; }
 
@@ -230,30 +338,40 @@
       border-radius: 30px;
       font-size: 0.95rem;
       display: none;
-      z-index: 1000;
+      z-index: 2000;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
     @media print {
       body { background: #fff; padding: 0; }
-      header, .nav-buttons, .btn, .action-buttons { display: none !important; }
+      header, .nav-buttons, .btn, .action-buttons, .drawer, .drawer-toggle-btn { display: none !important; }
       .card { box-shadow: none; border: none; padding: 0; margin-bottom: 16px; }
     }
   </style>
 </head>
 <body>
 
+<!-- Left Navigation Drawer -->
+<div id="drawer" class="drawer">
+  <button id="drawer-toggle" class="drawer-toggle-btn" title="เปิด/ปิด รายการคำถาม">▶</button>
+  <div class="drawer-header">
+    <span>สารบัญคำถาม (260 ข้อ)</span>
+    <span id="answered-count-badge" style="font-size: 0.8rem; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 12px;">0/260</span>
+  </div>
+  <div id="drawer-content" class="drawer-content"></div>
+</div>
+
 <div class="container">
   <header>
     <h1>แบบสำรวจปรัชญาและอุดมการณ์ทางการเมือง</h1>
-    <p>เวอร์ชันวิเคราะห์เชิงลึก (260 ข้อไม่ซ้ำ • เข็มทิศ 10 มิติ • แผนที่ความร้อน Heatmap)</p>
+    <p>เวอร์ชันวิเคราะห์ระบบคิดเชิงลึก (260 ข้อ • เข็มทิศ 10 มิติ • Heatmap)</p>
   </header>
 
   <div id="app">
     <!-- Intro View -->
     <div id="intro-view" class="card">
       <h2 style="color: var(--primary); margin-bottom: 12px;">ยินดีต้อนรับสู่แบบสำรวจ 260 ข้อ</h2>
-      <p>แบบสำรวจนี้ประเมินระบบคิดและอุดมการณ์ของคุณผ่าน 26 แกนปรัชญา พร้อมแสดงผลในรูปแบบ **เข็มทิศทางการเมือง 2D 4 สี 10 มิติ**, **แผนที่ความร้อน (Heatmap)** และ **การจับคู่นักปรัชญาประวัติศาสตร์**</p>
+      <p>แบบสำรวจนี้ประเมินระบบคิดและอุดมการณ์ของคุณผ่านคำถามสะท้อนทัศนคติเชิงคุณค่า (Value Trade-off) 26 แกนปรัชญา พร้อมแสดงผลในรูปแบบ **เข็มทิศทางการเมือง 10 มิติ**, **แผนที่ความร้อน (Heatmap)** และ **การจับคู่นักปรัชญาประวัติศาสตร์**</p>
       <div style="margin-top: 24px;">
         <button id="start-btn" class="btn">เริ่มทำแบบสำรวจ 260 ข้อ</button>
         <button id="resume-btn" class="btn btn-secondary" style="margin-top: 10px; display: none;">ทำต่อจากที่บันทึกไว้</button>
@@ -273,6 +391,7 @@
       <div id="options-container" class="options-grid"></div>
       <div class="nav-buttons">
         <button id="prev-btn" class="btn btn-secondary" style="flex: 1;" disabled>ย้อนกลับ</button>
+        <button id="next-btn" class="btn btn-secondary" style="flex: 1;">ข้ามไปข้อถัดไป</button>
       </div>
     </div>
 
@@ -295,7 +414,7 @@
         </div>
       </div>
 
-      <!-- 2. 2D Political Compasses Grid (10 Dimensions) -->
+      <!-- 2. 2D Political Compasses Grid -->
       <div class="card">
         <div class="section-title">2. กราฟพิกัดเข็มทิศทางการเมือง 10 มิติ</div>
         <div id="compasses-container" class="compass-grid"></div>
@@ -349,7 +468,7 @@
 <div id="toast" class="toast">คัดลอกลิงก์เรียบร้อยแล้ว!</div>
 
 <script>
-// DATA & CONFIG
+// CONFIG & DATA
 const DATA = {
   meta: {
     scale: [
@@ -414,7 +533,7 @@ const DATA = {
   heatMapPoints: [
     { name: "อนุรักษนิยมใหม่", name_en: "Neoconservatism", x: 25, y: 15, blurb: "เน้นการรักษาเสถียรภาพทางสังคม ทุนนิยมกลไกตลาด และความเข้มแข็งของสถาบันหลัก" },
     { name: "อนุรักษนิยมดั้งเดิม", name_en: "Traditional Conservatism", x: 10, y: 30, blurb: "ยึดมั่นในจารีตประเพณี ระเบียบสังคมดั้งเดิม และสถาบันทางศาสนา/ครอบครัว" },
-    { name: "อนุรักษนิยมสายกลาง", name_en: "Moderate Conservatism", x: 20, y: 40, blurb: "เน้นการเปลี่ยนแปลงแบบ постепен ปรับตัวตามยุคสมัยโดยรักษารากฐานเดิม" },
+    { name: "อนุรักษนิยมสายกลาง", name_en: "Moderate Conservatism", x: 20, y: 40, blurb: "เน้นการเปลี่ยนแปลงแบบค่อยเป็นค่อยไป ปรับตัวตามยุคสมัยโดยรักษารากฐานเดิม" },
     { name: "เสรีนิยมคลาสสิก", name_en: "Classical Liberalism", x: 55, y: -45, blurb: "เน้นเสรีภาพปัจเจก รัฐขนาดเล็ก และระบบเศรษฐกิจตลาดเสรีเชิงกลไก" },
     { name: "เสรีนิยมใหม่", name_en: "Neoliberalism", x: 60, y: -25, blurb: "เน้นการแปรรูปเป็นของเอกชน การค้าเสรี และการลดบทบาทรัฐในการกำกับตลาด" },
     { name: "เสรีภาพนิยมฝ่ายขวา", name_en: "Right-Libertarianism", x: 80, y: -75, blurb: "ชูเสรีภาพส่วนบุคคลสูงสุดและปฏิเสธการแทรกแซงทุกรูปแบบจากรัฐ" },
@@ -435,320 +554,349 @@ const DATA = {
   ]
 };
 
-// FULL 260 UNIFIED QUESTIONS DATASET
-const rawQuestionsData = [
-  // 1. soc_cap
-  { cat: 1, axis: "soc_cap", tag: "SOC", pole: "a", text: "ผลงานและความสำเร็จที่มนุษย์สร้างขึ้น ควรถูกแบ่งปันเพื่อโอบอุ้มคนที่อ่อนแอกว่าในสังคมเสมอ" },
-  { cat: 1, axis: "soc_cap", tag: "SOC", pole: "a", text: "ปัจจัยการผลิตและกิจการขนาดใหญ่ควรอยู่ภายใต้การดูแลของสาธารณะมากกว่าเอกชน" },
-  { cat: 1, axis: "soc_cap", tag: "SOC", pole: "a", text: "ความเหลื่อมล้ำทางเศรษฐกิจเกิดจากโครงสร้างที่ไม่เป็นธรรมตั้งแต่ต้น ไม่ใช่ความขยันส่วนบุคคล" },
-  { cat: 1, axis: "soc_cap", tag: "SOC", pole: "a", text: "ที่อยู่อาศัยและการรักษาพยาบาลเป็นสิทธิพื้นฐานที่ไม่ควรถูกนำมาเก็งกำไรในระบบตลาด" },
-  { cat: 1, axis: "soc_cap", tag: "SOC", pole: "a", text: "การสั่งสมความมั่งคั่งของมหาเศรษฐีคือการดึงทรัพยากรไปจากคนส่วนใหญ่ของประเทศ" },
-  { cat: 1, axis: "soc_cap", tag: "CAP", pole: "b", text: "ความต้องการสะสมทรัพย์สินส่วนตน คือแรงขับเคลื่อนธรรมชาติที่ทำให้มนุษย์สร้างสรรค์นวัตกรรม" },
-  { cat: 1, axis: "soc_cap", tag: "CAP", pole: "b", text: "การแข่งขันในระบบเอกชนสร้างประสิทธิภาพและคุณภาพบริการได้ดีกว่ารัฐบาลเสมอ" },
-  { cat: 1, axis: "soc_cap", tag: "CAP", pole: "b", text: "บุคคลสมควรได้รับผลตอบแทนตามสัดส่วนความสามารถแม้มันจะสร้างความแตกต่างของฐานะมหาศาล" },
-  { cat: 1, axis: "soc_cap", tag: "CAP", pole: "b", text: "การเก็บภาษีอัตราก้าวหน้าที่สูงเกินไปคือการลงโทษคนขยันและคนประสบความสำเร็จ" },
-  { cat: 1, axis: "soc_cap", tag: "CAP", pole: "b", text: "ทรัพย์สินส่วนบุคคลเป็นสิทธิสัมบูรณ์ที่รัฐไม่ควรเข้ามาแทรกแซงหรือจัดสรรใหม่" },
-
-  // 2. pln_mkt
-  { cat: 1, axis: "pln_mkt", tag: "PLN", pole: "a", text: "ทรัพยากรจำเป็นต่อการดำรงชีวิต ไม่ควรถูกปล่อยให้อยู่ในมือกลไกราคาแต่ต้องวางแผนโดยส่วนรวม" },
-  { cat: 1, axis: "pln_mkt", tag: "PLN", pole: "a", text: "รัฐบาลควรควบคุมราคาสินค้าอุปโภคบริโภคเพื่อป้องกันการฉวยโอกาสในยามวิกฤต" },
-  { cat: 1, axis: "pln_mkt", tag: "PLN", pole: "a", text: "การอุดหนุนและคุ้มครองภาคเกษตรกรรมโดยรัฐเป็นสิ่งจำเป็นต่อความมั่นคงทางอาหาร" },
-  { cat: 1, axis: "pln_mkt", tag: "PLN", pole: "a", text: "โครงสร้างพื้นฐานและพลังงานควรถูกกำหนดทิศทางโดยแผนแม่บทของรัฐบาล" },
-  { cat: 1, axis: "pln_mkt", tag: "PLN", pole: "a", text: "รัฐควรมีอำนาจสั่งการการผลิตและการกระจายสินค้าในยามที่เศรษฐกิจเผชิญภาวะถดถอย" },
-  { cat: 1, axis: "pln_mkt", tag: "MKT", pole: "b", text: "การเปิดให้ผู้คนแลกเปลี่ยนสินค้าอย่างอิสระ ตอบสนองความต้องการมนุษย์ได้ดีกว่าการวางแผนส่วนกลาง" },
-  { cat: 1, axis: "pln_mkt", tag: "MKT", pole: "b", text: "ราคาสินค้าและบริการควรปรับเปลี่ยนตามอุปสงค์และอุปทานโดยปราศจากการควบคุมของรัฐ" },
-  { cat: 1, axis: "pln_mkt", tag: "MKT", pole: "b", text: "การแทรกแซงราคาโดยรัฐมักทำให้เกิดสินค้าขาดแคลนและตลาดมืด" },
-  { cat: 1, axis: "pln_mkt", tag: "MKT", pole: "b", text: "การแปรรูปกิจการของรัฐให้เอกชนดูแลช่วยลดภาระงบประมาณและเพิ่มคุณภาพ" },
-  { cat: 1, axis: "pln_mkt", tag: "MKT", pole: "b", text: "กลไกตลาดเสรีสามารถจัดสรรทรัพยากรได้อย่างมีประสิทธิภาพสูงสุดในตัวเอง" },
-
-  // 3. merit_eq
-  { cat: 1, axis: "merit_eq", tag: "MERIT", pole: "a", text: "การแข่งขันที่เป็นธรรมและระบบคุณธรรมความสามารถ ควรเป็นหลักการเดียวในการคัดเลือกคนเข้าทำงาน" },
-  { cat: 1, axis: "merit_eq", tag: "MERIT", pole: "a", text: "เป็นเรื่องชอบธรรมที่คนขยันและมีความสามารถสูงจะได้รับผลตอบแทนมากกว่าคนอื่นอย่างมหาศาล" },
-  { cat: 1, axis: "merit_eq", tag: "MERIT", pole: "a", text: "สังคมไม่ควรอุดหนุนหรืออุ้มชูผู้ที่ล้มเหลวจากการตัดสินใจที่ผิดพลาดของตนเอง" },
-  { cat: 1, axis: "merit_eq", tag: "MERIT", pole: "a", text: "โอกาสที่เท่าเทียมกันในการเริ่มต้น สำคัญกว่าการพยายามทำให้ทุกคนได้ผลลัพธ์เท่ากัน" },
-  { cat: 1, axis: "merit_eq", tag: "MERIT", pole: "a", text: "การตั้งโควตาพิเศษให้กลุ่มคนบางกลุ่มเป็นการทำลายระบบคุณธรรมและสร้างความอยุติธรรมใหม่" },
-  { cat: 1, axis: "merit_eq", tag: "OUTEQ", pole: "b", text: "เป้าหมายสูงสุดของสังคมคือการทำให้ทุกคนมีระดับคุณภาพชีวิตและผลลัพธ์ใกล้เคียงกัน" },
-  { cat: 1, axis: "merit_eq", tag: "OUTEQ", pole: "b", text: "ความสำเร็จส่วนใหญ่ในชีวิตมาจากความโชคดีและต้นทุนเดิม ไม่ใช่ความสามารถส่วนตัวล้วนๆ" },
-  { cat: 1, axis: "merit_eq", tag: "OUTEQ", pole: "b", text: "รัฐควรลดช่องว่างรายได้เพื่อให้คนร่ำรวยที่สุดและคนยากจนที่สุดมีฐานะไม่ต่างกันเกินไป" },
-  { cat: 1, axis: "merit_eq", tag: "OUTEQ", pole: "b", text: "มาตรการชดเชยและให้สิทธิพิเศษแก่ผู้เสียเปรียบเป็นความจำเป็นเพื่อความเท่าเทียมจริง" },
-  { cat: 1, axis: "merit_eq", tag: "OUTEQ", pole: "b", text: "ผลตอบแทนจากการทำงานควรคำนึงถึงความจำเป็นในการดำรงชีวิตมากกว่าตำแหน่งงาน" },
-
-  // 4. auth_lib
-  { cat: 2, axis: "auth_lib", tag: "AUTH", pole: "a", text: "สังคมที่มีระเบียบวินัยเข้มงวดและกฎหมายที่เด็ดขาด เจริญรุ่งเรืองกว่าสังคมที่เน้นเสรีภาพไร้ขอบเขต" },
-  { cat: 2, axis: "auth_lib", tag: "AUTH", pole: "a", text: "ความมั่นคงและความปลอดภัยของส่วนรวม ยิ่งใหญ่และสำคัญกว่าความปรารถนาอิสระของปัจเจก" },
-  { cat: 2, axis: "auth_lib", tag: "AUTH", pole: "a", text: "การสอดส่องพฤติกรรมประชาชนเป็นสิ่งจำเป็นสำหรับการป้องกันอาชญากรรมและภัยคุกคาม" },
-  { cat: 2, axis: "auth_lib", tag: "AUTH", pole: "a", text: "ผู้นำที่เข้มแข็งและเด็ดขาดจำเป็นต่อการนำพาประเทศฝ่าฟันวิกฤตการณ์" },
-  { cat: 2, axis: "auth_lib", tag: "AUTH", pole: "a", text: "รัฐมีสิทธิจำกัดการแสดงออกของประชาชนหากสิ่งนั้นสร้างความวุ่นวายในบ้านเมือง" },
-  { cat: 2, axis: "auth_lib", tag: "LIB", pole: "b", text: "มนุษย์ทุกคนควรมีสิทธิเลือกวิถีชีวิตตนเองตราบใดที่ไม่ทำร้ายผู้อื่น โดยไม่ต้องมีรัฐมาคอยสั่งการ" },
-  { cat: 2, axis: "auth_lib", tag: "LIB", pole: "b", text: "เสรีภาพในการแสดงความคิดเห็นเป็นสิทธิสัมบูรณ์ที่ห้ามถูกจำกัดไม่ว่าด้วยเหตุผลใด" },
-  { cat: 2, axis: "auth_lib", tag: "LIB", pole: "b", text: "การสอดส่องข้อมูลส่วนตัวของประชาชนโดยรัฐเป็นการละเมิดสิทธิมนุษยชนที่รับไม่ได้" },
-  { cat: 2, axis: "auth_lib", tag: "LIB", pole: "b", text: "อำนาจรัฐที่มากเกินไปคือภัยคุกคามที่อันตรายที่สุดต่ออิสรภาพของมนุษย์" },
-  { cat: 2, axis: "auth_lib", tag: "LIB", pole: "b", text: "ประชาชนควรมีสิทธิวิพากษ์วิจารณ์และต่อต้านการใช้อำนาจรัฐที่ไม่ชอบธรรมได้เสมอ" },
-
-  // 5. dem_autc
-  { cat: 2, axis: "dem_autc", tag: "DEM", pole: "a", text: "การตัดสินใจเชิงนโยบายที่ชอบธรรม ต้องผ่านการถกเถียงและรับรองโดยตัวแทนประชาชนเท่านั้น" },
-  { cat: 2, axis: "dem_autc", tag: "DEM", pole: "a", text: "การเลือกตั้งที่เสรีและเป็นธรรมคือหัวใจสำคัญเดียวในการสร้างความชอบธรรมให้รัฐบาล" },
-  { cat: 2, axis: "dem_autc", tag: "DEM", pole: "a", text: "ประชาชนทุกคนควรมีสิทธิลงมติตัดสินใจในเรื่องสำคัญของบ้านเมืองอย่างเท่าเทียม" },
-  { cat: 2, axis: "dem_autc", tag: "DEM", pole: "a", text: "การมีพรรคการเมืองหลากหลายพรรคช่วยสะท้อนเจตจำนงที่แท้จริงของคนในชาติ" },
-  { cat: 2, axis: "dem_autc", tag: "DEM", pole: "a", text: "เสียงส่วนใหญ่ของประชาชนในระบบรัฐสภาคือผู้กำหนดทิศทางประเทศที่ถูกต้อง" },
-  { cat: 2, axis: "dem_autc", tag: "AUTC", pole: "b", text: "ในยามวิกฤต การมีผู้นำเด็ดขาดที่ตัดสินใจได้ทันที ดีกว่าการเสียเวลาหาฉันทามติในสภา" },
-  { cat: 2, axis: "dem_autc", tag: "AUTC", pole: "b", text: "ผู้เชี่ยวชาญที่มีความรู้ลึกซึ้งควรมีอำนาจตัดสินใจมากกว่าการปล่อยให้มวลชนเลือกตามอารมณ์" },
-  { cat: 2, axis: "dem_autc", tag: "AUTC", pole: "b", text: "สถาบันการปกครองแบบดั้งเดิมช่วยรักษาเสถียรภาพของชาติได้ดีกว่าระบบเลือกตั้งที่ผันผวน" },
-  { cat: 2, axis: "dem_autc", tag: "AUTC", pole: "b", text: "ระบบหลายพรรคมักสร้างความแตกแยกรุนแรงและทำให้การพัฒนาประเทศหยุดชักงัก" },
-  { cat: 2, axis: "dem_autc", tag: "AUTC", pole: "b", text: "การบริหารประเทศที่มีประสิทธิภาพบางครั้งต้องใช้อำนาจเบ็ดเสร็จโดยไม่ต้องรอกระบวนการสภา" },
-
-  // 6. local_cent
-  { cat: 2, axis: "local_cent", tag: "LOCAL", pole: "a", text: "ชุมชนท้องถิ่นเข้าใจและตอบสนองต่อปัญหาในพื้นที่ของตนเองได้ดีกว่าเจ้าหน้าที่ส่วนกลาง" },
-  { cat: 2, axis: "local_cent", tag: "LOCAL", pole: "a", text: "ภาษีที่เก็บได้ในท้องถิ่น ควรถูกนำมาใช้พัฒนาพื้นที่นั้นเป็นหลักก่อนส่งเข้าคลังหลวง" },
-  { cat: 2, axis: "local_cent", tag: "LOCAL", pole: "a", text: "หากกฎหมายส่วนกลางขัดกับวิถีชีวิตท้องถิ่น ชุมชนควรมีสิทธิปรับใช้กติกาเฉพาะของตนเอง" },
-  { cat: 2, axis: "local_cent", tag: "LOCAL", pole: "a", text: "โครงการขนาดใหญ่ของรัฐไม่ควรถูกสร้างขึ้นหากประชาชนในท้องถิ่นคัดค้าน" },
-  { cat: 2, axis: "local_cent", tag: "LOCAL", pole: "a", text: "การกระจายอำนาจการตัดสินใจสู่ระดับล่างสุดช่วยป้องกันการทุจริตรวมศูนย์" },
-  { cat: 2, axis: "local_cent", tag: "CENT", pole: "b", text: "การมีมาตรฐานกฎหมาย นโยบาย และการศึกษาเดียวกันทั่วประเทศ ช่วยป้องกันความเหลื่อมล้ำ" },
-  { cat: 2, axis: "local_cent", tag: "CENT", pole: "b", text: "รัฐบาลส่วนกลางจำเป็นต้องมีอำนาจเหนืองบประมาณเพื่อนำไปอุดหนุนพื้นที่ยากจน" },
-  { cat: 2, axis: "local_cent", tag: "CENT", pole: "b", text: "การปล่อยให้ท้องถิ่นมีอำนาจมากเกินไป มักนำไปสู่ระบบอิทธิพลและซุ้มมือปืนในพื้นที่" },
-  { cat: 2, axis: "local_cent", tag: "CENT", pole: "b", text: "การตัดสินใจเชิงยุทธศาสตร์ของประเทศต้องยึดผลประโยชน์รวม แม้จะกระทบคนบางพื้นที่" },
-  { cat: 2, axis: "local_cent", tag: "CENT", pole: "b", text: "เอกภาพและความมั่นคงของชาติจะเกิดขึ้นได้ก็ต่อเมื่อการสั่งการถูกรวมไว้ที่ส่วนกลาง" },
-
-  // 7. techno_pop
-  { cat: 2, axis: "techno_pop", tag: "TECHNO", pole: "a", text: "นโยบายสาธารณะที่ซับซ้อน ควรได้รับการออกแบบและตัดสินใจโดยผู้เชี่ยวชาญเฉพาะทาง" },
-  { cat: 2, axis: "techno_pop", tag: "TECHNO", pole: "a", text: "ข้อมูลเชิงประจักษ์และงานวิจัยทางวิทยาศาสตร์ คือเครื่องมือเดียวที่เชื่อถือได้ในการพัฒนาประเทศ" },
-  { cat: 2, axis: "techno_pop", tag: "TECHNO", pole: "a", text: "นโยบายการเงินและเศรษฐกิจควรดูแลโดยองค์กรอิสระทางเทคนิคที่ปราศจากการเมือง" },
-  { cat: 2, axis: "techno_pop", tag: "TECHNO", pole: "a", text: "เสียงของมวลชนที่ไม่เข้าใจข้อมูลเชิงลึก มักนำไปสู่นโยบายประชานิยมที่สร้างภัยพิบัติระยะยาว" },
-  { cat: 2, axis: "techno_pop", tag: "TECHNO", pole: "a", text: "การตัดสินใจเรื่องสำคัญควรใช้หลักวิชาการนำหน้าความพึงพอใจของประชาชน" },
-  { cat: 2, axis: "techno_pop", tag: "POP", pole: "b", text: "เจตจำนงและความต้องการของประชาชนส่วนใหญ่ สำคัญและทรงคุณค่ามากกว่าความคิดเห็นนักวิชาการ" },
-  { cat: 2, axis: "techno_pop", tag: "POP", pole: "b", text: "สามัญสำนึกและประสบการณ์ตรงของคนธรรมดา มักแก้ปัญหาชีวิตจริงได้ดีกว่าทฤษฎีในตำรา" },
-  { cat: 2, axis: "techno_pop", tag: "POP", pole: "b", text: "เทคโนแครตและผู้เชี่ยวชาญมักรับใช้ชนชั้นนำ และหลุดพ้นจากความจริงของคนหาเช้ากินค่ำ" },
-  { cat: 2, axis: "techno_pop", tag: "POP", pole: "b", text: "หากผลการศึกษาวิจัยขัดแย้งกับความต้องการของประชาชน รัฐบาลต้องเลือกทำตามประชาชน" },
-  { cat: 2, axis: "techno_pop", tag: "POP", pole: "b", text: "อำนาจการตัดสินใจสูงสุดควรมาจากประชามติตรงของประชาชน ไม่ใช่ให้คนฉลาดคิดแทน" },
-
-  // 8. univ_part
-  { cat: 3, axis: "univ_part", tag: "UNIV", pole: "a", text: "สิทธิมนุษยชนเป็นมาตรฐานสากลที่ทุกประเทศต้องปฏิบัติตามโดยไม่มีข้อเว้น" },
-  { cat: 3, axis: "univ_part", tag: "UNIV", pole: "a", text: "ศาลอาญาระหว่างประเทศควรมีอำนาจตัดสินผู้นำที่ก่ออาชญากรรมต่อมนุษยชาติในทุกประเทศ" },
-  { cat: 3, axis: "univ_part", tag: "UNIV", pole: "a", text: "ประเทศร่ำรวยมีหน้าที่ทางศีลธรรมในการช่วยเหลือประเทศยากจนโดยไม่หวังผลตอบแทน" },
-  { cat: 3, axis: "univ_part", tag: "UNIV", pole: "a", text: "การยับยั้งการล้างเผ่าพันธุ์ในต่างแดนเป็นความชอบธรรมทางการทหารระดับสากล" },
-  { cat: 3, axis: "univ_part", tag: "UNIV", pole: "a", text: "มนุษย์ทุกคนมีศักดิ์ศรีและสิทธิเท่าเทียมกันไม่ว่าจะเกิดในพรมแดนใดในโลก" },
-  { cat: 3, axis: "univ_part", tag: "PART", pole: "b", text: "แต่ละประเทศมีบริบทประวัติศาสตร์เฉพาะตัว จึงไม่มีระบบการเมืองใดใช้ได้กับทุกชาติ" },
-  { cat: 3, axis: "univ_part", tag: "PART", pole: "b", text: "องค์กรระหว่างประเทศไม่ควรเข้ามาแทรกแซงกระบวนการยุติธรรมภายในของชาติอธิปไตย" },
-  { cat: 3, axis: "univ_part", tag: "PART", pole: "b", text: "งบประมาณแผ่นดินควรทุ่มเทช่วยเหลือประชาชนในประเทศตนเองก่อนส่งออกต่างแดน" },
-  { cat: 3, axis: "univ_part", tag: "PART", pole: "b", text: "การส่งทหารไปทำสงครามต่างแดนเป็นการสูญเสียชีวิตและงบประมาณโดยไม่จำเป็น" },
-  { cat: 3, axis: "univ_part", tag: "PART", pole: "b", text: "มาตรฐานจริยธรรมของโลกสากลมักเป็นเพียงเครื่องมือของชาติมหาอำนาจในการกดขี่ชาติเล็ก" },
-
-  // 9. glob_nat
-  { cat: 3, axis: "glob_nat", tag: "GLOB", pole: "a", text: "การร่วมมือและพึ่งพาอาศัยกันในระดับโลก คือทางออกเดียวในการแก้ปัญหาใหญ่ของมนุษยชาติ" },
-  { cat: 3, axis: "glob_nat", tag: "GLOB", pole: "a", text: "การเปิดเสรีพรมแดนและการค้าข้ามชาติช่วยยกระดับคุณภาพชีวิตของมนุษย์โดยรวม" },
-  { cat: 3, axis: "glob_nat", tag: "GLOB", pole: "a", text: "การเป็นพลเมืองโลกที่มีความรับผิดชอบ สำคัญกว่าการยึดติดกับความเป็นชาตินิยม" },
-  { cat: 3, axis: "glob_nat", tag: "GLOB", pole: "a", text: "ข้อตกลงและสนธิสัญญาระหว่างประเทศควรมีอำนาจเหนือข้อบังคับกฎหมายภายในประเทศ" },
-  { cat: 3, axis: "glob_nat", tag: "GLOB", pole: "a", text: "การรวมกลุ่มทางเศรษฐกิจระดับภูมิภาคช่วยสร้างสันติภาพและความมั่งคั่งระยะยาว" },
-  { cat: 3, axis: "glob_nat", tag: "NAT", pole: "b", text: "หน้าที่แรกและสำคัญที่สุดของรัฐ คือการปกป้องผลประโยชน์และความปลอดภัยของคนในชาติตนเองก่อน" },
-  { cat: 3, axis: "glob_nat", tag: "NAT", pole: "b", text: "การควบคุมพรมแดนอย่างเข้มงวดจำเป็นต่อการรักษาเสถียรภาพและวัฒนธรรมของชาติ" },
-  { cat: 3, axis: "glob_nat", tag: "NAT", pole: "b", text: "การพึ่งพาเศรษฐกิจโลกมากเกินไปทำให้ประเทศอ่อนแอและสูญเสียอำนาจต่อรอง" },
-  { cat: 3, axis: "glob_nat", tag: "NAT", pole: "b", text: "ภาษีศุลกากรเป็นเครื่องมือจำเป็นในการปกป้องอุตสาหกรรมและแรงงานภายในประเทศ" },
-  { cat: 3, axis: "glob_nat", tag: "NAT", pole: "b", text: "ความรักชาติและความภักดีต่อประเทศตนเองคือรากฐานความสามัคคีในสังคม" },
-
-  // 10. prog_trad
-  { cat: 4, axis: "prog_trad", tag: "PROG", pole: "a", text: "ความเชื่อและธรรมเนียมปฏิบัติต่างๆ ควรถูกตั้งคำถามและเปลี่ยนแปลงตามยุคสมัยเสมอ" },
-  { cat: 4, axis: "prog_trad", tag: "PROG", pole: "a", text: "ความหลากหลายทางเพศและรูปแบบครอบครัวใหม่ควรได้รับการยอมรับทางกฎหมายอย่างเท่าเทียม" },
-  { cat: 4, axis: "prog_trad", tag: "PROG", pole: "a", text: "สัญลักษณ์และอนุสาวรีย์ที่เกี่ยวข้องกับการกดขี่ในอดีตควรถูกปลดออกหรือทบทวน" },
-  { cat: 4, axis: "prog_trad", tag: "PROG", pole: "a", text: "การศึกษาควรส่งเสริมการวิพากษ์วิจารณ์บรรทัดฐานดั้งเดิมมากกว่าการปลูกฝังการเชื่อฟัง" },
-  { cat: 4, axis: "prog_trad", tag: "PROG", pole: "a", text: "ค่านิยมใหม่ๆ ทางสังคมช่วยขยายขอบเขตสิทธิเสรีภาพและความเท่าเทียมของมนุษย์" },
-  { cat: 4, axis: "prog_trad", tag: "TRAD", pole: "b", text: "จารีตประเพณีและสถาบันดั้งเดิมช่วยรักษาเสถียรภาพของสังคมไม่ให้พังทลาย" },
-  { cat: 4, axis: "prog_trad", tag: "TRAD", pole: "b", text: "โครงสร้างครอบครัวแบบดั้งเดิมชายหญิงเป็นรากฐานที่เข้มแข็งที่สุดของสังคม" },
-  { cat: 4, axis: "prog_trad", tag: "TRAD", pole: "b", text: "ประวัติศาสตร์และมรดกบรรพบุรุษคือสิ่งล้ำค่าที่ไม่ควรถูกทำลายด้วยความรู้สึกปัจจุบัน" },
-  { cat: 4, axis: "prog_trad", tag: "TRAD", pole: "b", text: "การศึกษาควรเน้นเรื่องระเบียบวินัย ความกตัญญู และการเคารพผู้ใหญ่" },
-  { cat: 4, axis: "prog_trad", tag: "TRAD", pole: "b", text: "การเร่งรัดค่านิยมสมัยใหม่มากเกินไปทำให้สังคมสูญเสียศีลธรรมและความผูกพัน" },
-
-  // 11. refm_cons
-  { cat: 4, axis: "refm_cons", tag: "REFM", pole: "a", text: "การแก้ไขกติกาสูงสุดและโครงสร้างสังคมจำเป็นเสมอเมื่อบริบทของโลกเปลี่ยนแปลงไป" },
-  { cat: 4, axis: "refm_cons", tag: "REFM", pole: "a", text: "การปฏิรูปกฎหมายที่ล้าสมัยทันทีช่วยป้องกันวิกฤตและความขัดแย้งในอนาคต" },
-  { cat: 4, axis: "refm_cons", tag: "REFM", pole: "a", text: "ภาคประชาชนควรมีช่องทางผลักดันการเปลี่ยนแปลงเชิงโครงสร้างได้อย่างรวดเร็ว" },
-  { cat: 4, axis: "refm_cons", tag: "REFM", pole: "a", text: "การทดลองนโยบายสังคมใหม่ๆ เป็นสิ่งจำเป็นในการแสวงหาคุณภาพชีวิตที่ดีกว่า" },
-  { cat: 4, axis: "refm_cons", tag: "REFM", pole: "a", text: "สถาบันเก่าแก่ที่ไม่ปรับตัวตามความต้องการของยุคสมัยสมควรถูกปฏิรูปอย่างรุนแรง" },
-  { cat: 4, axis: "refm_cons", tag: "CONS", pole: "b", text: "การรักษาสถานะเดิมและเปลี่ยนผ่านอย่างระมัดระวังปลอดภัยกว่าการเสี่ยงกับสิ่งที่ไม่คุ้นเคย" },
-  { cat: 4, axis: "refm_cons", tag: "CONS", pole: "b", text: "ความต่อเนื่องและความนิ่งของสถาบันหลักช่วยให้ประเทศดำเนินไปได้อย่างมั่นคง" },
-  { cat: 4, axis: "refm_cons", tag: "CONS", pole: "b", text: "การรักษาระบบที่พิสูจน์แล้วว่าใช้งานได้จริง ดีกว่าการทำลายเพื่อสร้างระบบใหม่ที่เสี่ยง" },
-  { cat: 4, axis: "refm_cons", tag: "CONS", pole: "b", text: "กฎหมายและระเบียบที่มีมายาวนานช่วยป้องกันความสับสนวุ่นวายในบ้านเมือง" },
-  { cat: 4, axis: "refm_cons", tag: "CONS", pole: "b", text: "การเปลี่ยนแปลงที่เร็วเกินไปมักนำไปสู่ความขัดแย้งและผลกระทบที่ไม่คาดคิด" },
-
-  // 12. sec_rel
-  { cat: 4, axis: "sec_rel", tag: "SEC", pole: "a", text: "กฎหมาย นโยบาย และพื้นที่สาธารณะต้องแยกขาดจากหลักคำสอนทางศาสนาอย่างสิ้นเชิง" },
-  { cat: 4, axis: "sec_rel", tag: "SEC", pole: "a", text: "งบประมาณแผ่นดินจากภาษีประชาชน ไม่ควรถูกนำไปใช้อุดหนุนหรือเผยแผ่ศาสนาใดๆ" },
-  { cat: 4, axis: "sec_rel", tag: "SEC", pole: "a", text: "สัญลักษณ์และพิธีกรรมทางศาสนาไม่ควรถูกนำมารวมในกิจกรรมเป็นทางการของรัฐ" },
-  { cat: 4, axis: "sec_rel", tag: "SEC", pole: "a", text: "การตัดสินทางจริยธรรมของรัฐควรยึดหลักเหตุผลและสิทธิมนุษยชน ไม่ใช่ข้อห้ามทางศาสนา" },
-  { cat: 4, axis: "sec_rel", tag: "SEC", pole: "a", text: "ศรัทธาทางศาสนาเป็นเรื่องส่วนบุคคลโดยสมบูรณ์ และไม่ควรมีบทบาทชี้นำการเมือง" },
-  { cat: 4, axis: "sec_rel", tag: "REL", pole: "b", text: "หลักธรรมคำสอนทางศาสนาเป็นรากฐานสำคัญของจริยธรรมในการปกครองบ้านเมือง" },
-  { cat: 4, axis: "sec_rel", tag: "REL", pole: "b", text: "รัฐควรอุปถัมภ์และคุ้มครองศาสนาหลักของชาติเพื่อรักษาศูนย์รวมจิตใจของประชาชน" },
-  { cat: 4, axis: "sec_rel", tag: "REL", pole: "b", text: "กฎหมายเกี่ยวกับครอบครัวและศีลธรรมควรยึดตามหลักศาสนธรรมดั้งเดิม" },
-  { cat: 4, axis: "sec_rel", tag: "REL", pole: "b", text: "ผู้นำทางการเมืองที่ดีควรเป็นผู้ที่มีความศรัทธาและปฏิบัติตามหลักศาสนาอย่างเคร่งครัด" },
-  { cat: 4, axis: "sec_rel", tag: "REL", pole: "b", text: "การตัดศาสนาออกไปจากรัฐทำให้สังคมเจริญเพียงวัตถุแต่เสื่อมโทรมทางจิตใจ" },
-
-  // 13. multi_mono
-  { cat: 4, axis: "multi_mono", tag: "MULTI", pole: "a", text: "ความหลากหลายทางวัฒนธรรมและเชื้อชาติทำให้สังคมเข้มแข็งและงดงาม" },
-  { cat: 4, axis: "multi_mono", tag: "MULTI", pole: "a", text: "ผู้ย้ายถิ่นฐานควรรักษาวัฒนธรรมเดิมของตนควบคู่กับการเรียนรู้วัฒนธรรมใหม่" },
-  { cat: 4, axis: "multi_mono", tag: "MULTI", pole: "a", text: "รัฐควรสนับสนุนภาษาและประเพณีของชนกลุ่มน้อยอย่างแข็งขัน" },
-  { cat: 4, axis: "multi_mono", tag: "MULTI", pole: "a", text: "หลักสูตรการศึกษาควรสะท้อนมุมมองและประวัติศาสตร์ของหลายวัฒนธรรม" },
-  { cat: 4, axis: "multi_mono", tag: "MULTI", pole: "a", text: "พหุวัฒนธรรมเป็นพัฒนาการปกติและเป็นจุดแข็งของโลกยุคปัจจุบัน" },
-  { cat: 4, axis: "multi_mono", tag: "MONO", pole: "b", text: "สังคมที่มีวัฒนธรรมและเอกลักษณ์กลมกลืนเป็นหนึ่งเดียวจะสงบสุขมากกว่า" },
-  { cat: 4, axis: "multi_mono", tag: "MONO", pole: "b", text: "ผู้เข้ามาอยู่ใหม่ควรกลืนกลายเข้าสู่วัฒนธรรมหลักของประเทศอย่างสมบูรณ์" },
-  { cat: 4, axis: "multi_mono", tag: "MONO", pole: "b", text: "การใช้ภาษาราชการภาษาเดียวช่วยลดความขัดแย้งและสร้างเอกภาพ" },
-  { cat: 4, axis: "multi_mono", tag: "MONO", pole: "b", text: "การรักษาเอกลักษณ์วัฒนธรรมเดิมสำคัญกว่าการรับความหลากหลายเข้ามา" },
-  { cat: 4, axis: "multi_mono", tag: "MONO", pole: "b", text: "พหุวัฒนธรรมมากเกินไปนำไปสู่การแตกแยกและสังคมที่ขาดความไว้เนื้อเชื่อใจ" },
-
-  // 14. eqal_hier
-  { cat: 4, axis: "eqal_hier", tag: "EQAL", pole: "a", text: "เป้าหมายสูงสุดของสังคมคือการขจัดลำดับชั้นและสร้างความเท่าเทียมในทุกมิติ" },
-  { cat: 4, axis: "eqal_hier", tag: "EQAL", pole: "a", text: "อำนาจตัดสินใจควรกระจายอย่างเท่าเทียม ไม่ควรรวมศูนย์อยู่ที่กลุ่มชนชั้นนำ" },
-  { cat: 4, axis: "eqal_hier", tag: "EQAL", pole: "a", text: "การตระหนักรู้เรื่องสิทธิเท่าเทียมกันช่วยลดการกดขี่ทางสังคมลงได้" },
-  { cat: 4, axis: "eqal_hier", tag: "EQAL", pole: "a", text: "ไม่มีมนุษย์คนใดเกิดมาพร้อมกับสิทธิพิเศษเหนือผู้อื่นโดยกำเนิด" },
-  { cat: 4, axis: "eqal_hier", tag: "EQAL", pole: "a", text: "การเคารพผู้คนอย่างเท่าเทียมกันโดยไม่สนฐานะยศถาบรรดาศักดิ์คือค่านิยมสูงสุด" },
-  { cat: 4, axis: "eqal_hier", tag: "HIER", pole: "b", text: "ลำดับชั้นและบทบาทที่แตกต่างกันในสังคมเป็นเรื่องธรรมชาติที่ช่วยให้ระบบทำงานได้" },
-  { cat: 4, axis: "eqal_hier", tag: "HIER", pole: "b", text: "ผู้มีคุณวุฒิ ประสบการณ์ หรือฐานะสูงกว่า สมควรได้รับความเคารพและสถานะพิเศษ" },
-  { cat: 4, axis: "eqal_hier", tag: "HIER", pole: "b", text: "การพยายามทำให้ทุกคนเท่ากันในทุกเรื่องทำลายระเบียบและคุณค่าของความดีงาม" },
-  { cat: 4, axis: "eqal_hier", tag: "HIER", pole: "b", text: "ผู้นำและชนชั้นบริหารจำเป็นต้องมีสถานะและอำนาจที่สูงกว่าเพื่อควบคุมสังคม" },
-  { cat: 4, axis: "eqal_hier", tag: "HIER", pole: "b", text: "สังคมที่มีความเคารพตามลำดับอาวุโสและบทบาทช่วยลดความวุ่นวายลงได้" },
-
-  // 15. acc_dec
-  { cat: 5, axis: "acc_dec", tag: "ACC", pole: "a", text: "การเร่งพัฒนาเทคโนโลยีและปัญญาประดิษฐ์ควรถูกผลักดันให้เร็วที่สุดเพื่ออนาคต" },
-  { cat: 5, axis: "acc_dec", tag: "ACC", pole: "a", text: "นวัตกรรมและเทคโนโลยีเป็นเครื่องมือหลักในการแก้ปัญหาความยากจนและโรคภัย" },
-  { cat: 5, axis: "acc_dec", tag: "ACC", pole: "a", text: "การสำรวจวิทยาศาสตร์ใหม่ๆ ควรกระทำโดยไม่มีกฎระเบียบมาคอยหน่วงรั้ง" },
-  { cat: 5, axis: "acc_dec", tag: "ACC", pole: "a", text: "ความเสี่ยงจากเทคโนโลยีใหม่ควรแก้ด้วยการสร้างเทคโนโลยีที่ก้าวหน้ายิ่งกว่าเดิม" },
-  { cat: 5, axis: "acc_dec", tag: "ACC", pole: "a", text: "การเปลี่ยนแปลงทางเทคโนโลยีอย่างรวดเร็วคือสัญญาณความเจริญของมนุษยชาติ" },
-  { cat: 5, axis: "acc_dec", tag: "DEC", pole: "b", text: "การเติบโตทางเทคโนโลยีที่รวดเร็วเกินไปกำลังทำลายความเป็นมนุษย์และสิ่งแวดล้อม" },
-  { cat: 5, axis: "acc_dec", tag: "DEC", pole: "b", text: "หลักความระมัดระวังล่วงหน้าควรกำกับนวัตกรรมก่อนปล่อยสู่สาธารณะเสมอ" },
-  { cat: 5, axis: "acc_dec", tag: "DEC", pole: "b", text: "ทรัพยากรควรทุ่มเทแก้ปัญหาสังคมปัจจุบันก่อนลงทุนโครงการเทคโนโลยีล้ำยุค" },
-  { cat: 5, axis: "acc_dec", tag: "DEC", pole: "b", text: "การทดลองวิทยาศาสตร์ที่เสี่ยงต่อระบบนิเวศควรถูกสั่งห้ามอย่างเด็ดขาด" },
-  { cat: 5, axis: "acc_dec", tag: "DEC", pole: "b", text: "การควบคุมอัตราการพัฒนาเทคโนโลยีช่วยให้มนุษย์ปรับตัวและปลอดภัยขึ้น" },
-
-  // 16. trans_prim
-  { cat: 5, axis: "trans_prim", tag: "TRANS", pole: "a", text: "มนุษย์ควรใช้เทคโนโลยีเอาชนะข้อจำกัดทางชีวภาพ เช่น โรคภัย ความแก่ และความตาย" },
-  { cat: 5, axis: "trans_prim", tag: "TRANS", pole: "a", text: "การดัดแปลงพันธุกรรมเพื่อเพิ่มสติปัญญาและศักยภาพมนุษย์เป็นก้าวต่อไปของวิวัฒนาการ" },
-  { cat: 5, axis: "trans_prim", tag: "TRANS", pole: "a", text: "การผสานร่างกายเข้ากับเทคโนโลยีและชิปประมวลผลช่วยขยายขอบเขตความรู้" },
-  { cat: 5, axis: "trans_prim", tag: "TRANS", pole: "a", text: "มนุษย์มีสิทธิปรับแต่งและอัปเกรดร่างกายตนเองด้วยเทคโนโลยีตามปรารถนา" },
-  { cat: 5, axis: "trans_prim", tag: "TRANS", pole: "a", text: "ข้อจำกัดทางกายภาพตามธรรมชาติเป็นสิ่งที่มนุษย์ควรก้าวข้ามไปให้ได้" },
-  { cat: 5, axis: "trans_prim", tag: "PRIM", pole: "b", text: "การยอมรับธรรมชาติและความเป็นมนุษย์ดั้งเดิมคือรากฐานความหมายของชีวิต" },
-  { cat: 5, axis: "trans_prim", tag: "PRIM", pole: "b", text: "ความแก่ ความเจ็บ และความตาย เป็นส่วนหนึ่งของธรรมชาติที่ไม่ควรก้าวล่วง" },
-  { cat: 5, axis: "trans_prim", tag: "PRIM", pole: "b", text: "วิถีชีวิตที่เรียบง่ายและใกล้ชิดธรรมชาติสร้างความสุขที่แท้จริงมากกว่าเทคโนโลยี" },
-  { cat: 5, axis: "trans_prim", tag: "PRIM", pole: "b", text: "การพึ่งพาอุปกรณ์ดัดแปลงร่างกายมากเกินไปทำให้เราสูญเสียคุณค่าความเป็นมนุษย์" },
-  { cat: 5, axis: "trans_prim", tag: "PRIM", pole: "b", text: "การแทรกแซงพันธุกรรมมนุษย์เป็นอันตรายและละเมิดความบริสุทธิ์ของธรรมชาติ" },
-
-  // 17. coml_civl
-  { cat: 6, axis: "coml_civl", tag: "COML", pole: "a", text: "ความยุติธรรมต้องยืดหยุ่นและพิจารณาตามบริบทคดี มากกว่ายึดตัวอักษรตายตัว" },
-  { cat: 6, axis: "coml_civl", tag: "COML", pole: "a", text: "ผู้พิพากษาควรมีดุลพินิจในการตีความกฎหมายให้สอดคล้องกับความเป็นจริงในสังคม" },
-  { cat: 6, axis: "coml_civl", tag: "COML", pole: "a", text: "บรรทัดฐานคำตัดสินในอดีตและคดีตัวอย่าง ควรเป็นหลักการพิจารณาคดีความ" },
-  { cat: 6, axis: "coml_civl", tag: "COML", pole: "a", text: "ระบบคณะลูกขุนสามัญชนช่วยเพิ่มความชอบธรรมและความเป็นธรรมแก่คำตัดสิน" },
-  { cat: 6, axis: "coml_civl", tag: "COML", pole: "a", text: "กฎหมายที่พัฒนาจากเหตุการณ์จริงยืดหยุ่นและเป็นธรรมกว่าประมวลกฎหมายที่ร่างล่วงหน้า" },
-  { cat: 6, axis: "coml_civl", tag: "CIVL", pole: "b", text: "การตัดสินคดีต้องยึดตามลายลักษณ์อักษรของประมวลกฎหมายอย่างเคร่งครัดและเท่าเทียม" },
-  { cat: 6, axis: "coml_civl", tag: "CIVL", pole: "b", text: "ความแน่นอนของตัวบทกฎหมายสำคัญกว่าความคิดเห็นส่วนตัวของผู้พิพากษา" },
-  { cat: 6, axis: "coml_civl", tag: "CIVL", pole: "b", text: "สภาผู้แทนราษฎรควรเป็นผู้เดียวที่มีอำนาจออกกฎหมาย ไม่ใช่การสร้างกฎผ่านคำพิพากษา" },
-  { cat: 6, axis: "coml_civl", tag: "CIVL", pole: "b", text: "การพิจารณาคดีควรยึดเจตนารมณ์ตัวบทที่เขียนไว้เพื่อป้องกันมาตรฐานสองระดับ" },
-  { cat: 6, axis: "coml_civl", tag: "CIVL", pole: "b", text: "ความชัดเจนของประมวลกฎหมายช่วยให้ประชาชนรู้ขอบเขตสิทธิของตนเองได้ดีที่สุด" },
-
-  // 18. pun_rehb
-  { cat: 6, axis: "pun_rehb", tag: "PUN", pole: "a", text: "จุดประสงค์หลักของคุกคือการลงโทษและสาสมความผิดให้สมกับความเสียหายที่ก่อ" },
-  { cat: 6, axis: "pun_rehb", tag: "PUN", pole: "a", text: "โทษประหารชีวิตจำเป็นสำหรับการป้องปรามอาชญากรรมร้ายแรงและสร้างความยุติธรรมให้เหยื่อ" },
-  { cat: 6, axis: "pun_rehb", tag: "PUN", pole: "a", text: "บทลงโทษที่รุนแรงและเด็ดขาดคือเครื่องมือที่มีประสิทธิภาพที่สุดในการลดอาชญากรรม" },
-  { cat: 6, axis: "pun_rehb", tag: "PUN", pole: "a", text: "สิทธิของผู้เสียหายควรได้รับความคุ้มครองและให้ความสำคัญมากกว่าสิทธิของผู้ต้องหา" },
-  { cat: 6, axis: "pun_rehb", tag: "PUN", pole: "a", text: "ผู้กระทำผิดร้ายแรงควรได้รับความเจ็บปวดและชดใช้ความผิดอย่างสมน้ำสมเนื้อ" },
-  { cat: 6, axis: "pun_rehb", tag: "REHB", pole: "b", text: "จุดประสงค์หลักของระบบยุติธรรมคือการฟื้นฟู ปรับปรุง และให้โอกาสผู้กระทำผิดกลับคืนสังคม" },
-  { cat: 6, axis: "pun_rehb", tag: "REHB", pole: "b", text: "โทษประหารชีวิตละเมิดสิทธิมนุษยชนและควรถูกยกเลิกอย่างสิ้นเชิงในทุกกรณี" },
-  { cat: 6, axis: "pun_rehb", tag: "REHB", pole: "b", text: "อาชญากรรมส่วนใหญ่เกิดจากปัญหาโครงสร้างสังคมที่ควรได้รับการแก้ไขที่ต้นตอ" },
-  { cat: 6, axis: "pun_rehb", tag: "REHB", pole: "b", text: "เรือนจำควรเป็นสถานที่ฝึกอาชีพและบำบัดจิตใจ มากกว่าการทรมานผู้ต้องขัง" },
-  { cat: 6, axis: "pun_rehb", tag: "REHB", pole: "b", text: "กระบวนการยุติธรรมเชิงสมานฉันท์ช่วยสมานบาดแผลของสังคมได้ดีกว่าการแก้แค้น" },
-
-  // 19. cmpr_pers
-  { cat: 7, axis: "cmpr_pers", tag: "CMPR", pole: "a", text: "นักการเมืองที่ดีต้องรู้จักประนีประนอมถอยคนละก้าวเพื่อให้เกิดผลงานจริง" },
-  { cat: 7, axis: "cmpr_pers", tag: "CMPR", pole: "a", text: "การรับฟังและปรับตัวเข้าหาฝ่ายตรงข้ามช่วยลดความขัดแย้งในระยะยาว" },
-  { cat: 7, axis: "cmpr_pers", tag: "CMPR", pole: "a", text: "ข้อตกลงที่ก้าวหน้าได้เพียงครึ่งเดียวยังดีกว่าการไม่ได้อะไรเลยจากการดื้อดึง" },
-  { cat: 7, axis: "cmpr_pers", tag: "CMPR", pole: "a", text: "การเมืองคือศิลปะของความเป็นไปได้ที่ต้องพร้อมเจรจาแลกเปลี่ยน" },
-  { cat: 7, axis: "cmpr_pers", tag: "CMPR", pole: "a", text: "การร่วมมือกับพรรคที่มีแนวคิดต่างกันเป็นสิ่งจำเป็นในการบริหารประเทศ" },
-  { cat: 7, axis: "cmpr_pers", tag: "PERS", pole: "b", text: "การยอมลดเพดานอุดมการณ์คือการยึดติดผลประโยชน์ชั่วคราวและทรยศความถูกต้อง" },
-  { cat: 7, axis: "cmpr_pers", tag: "PERS", pole: "b", text: "จุดยืนที่ชัดเจนและมั่นคงสำคัญกว่าการสร้างข้อตกลงที่คลุมเครือเพื่อเอาใจทุกคน" },
-  { cat: 7, axis: "cmpr_pers", tag: "PERS", pole: "b", text: "การเจรจากับฝ่ายที่ละเมิดหลักการเป็นการให้ความชอบธรรมแก่ความอยุติธรรม" },
-  { cat: 7, axis: "cmpr_pers", tag: "PERS", pole: "b", text: "อุดมการณ์รากฐานเป็นสิ่งที่ไม่สามารถนำมาซื้อขายหรือแลกเปลี่ยนทางการเมืองได้" },
-  { cat: 7, axis: "cmpr_pers", tag: "PERS", pole: "b", text: "การยืนหยัดในความถูกต้องแม้อยู่ในเสียงส่วนน้อย ดีกว่าการประนีประนอมกับสิ่งที่ไม่ดี" },
-
-  // 20. trns_dirc
-  { cat: 7, axis: "trns_dirc", tag: "TRNS", pole: "a", text: "การเปลี่ยนผ่านทางสังคมต้องทำเป็นขั้นตอนเพื่อป้องกันความโกลาหลวุ่นวาย" },
-  { cat: 7, axis: "trns_dirc", tag: "TRNS", pole: "a", text: "การทดลองนำร่องในพื้นที่เล็กก่อนขยายผลเป็นวิธีที่ปลอดภัยและรอบคอบ" },
-  { cat: 7, axis: "trns_dirc", tag: "TRNS", pole: "a", text: "สังคมต้องการเวลาในการปรับตัวและเรียนรู้ก่อนรับโครงสร้างใหม่ทั้งหมด" },
-  { cat: 7, axis: "trns_dirc", tag: "TRNS", pole: "a", text: "การเปลี่ยนแปลงอย่างฉับพลันมักเปิดช่องให้กลุ่มฉวยโอกาสเข้ามายึดอำนาจ" },
-  { cat: 7, axis: "trns_dirc", tag: "TRNS", pole: "a", text: "การวางแผนระยะเปลี่ยนผ่านที่ชัดเจนช่วยลดผลกระทบต่อเศรษฐกิจและชีวิตประชาชน" },
-  { cat: 7, axis: "trns_dirc", tag: "DIRC", pole: "b", text: "เมื่อระบบเดิมอยุติธรรม การเปลี่ยนแปลงต้องเกิดขึ้นทันทีโดยไม่ต้องรอขั้นตอนยาวนาน" },
-  { cat: 7, axis: "trns_dirc", tag: "DIRC", pole: "b", text: "มาตรการครึ่งๆ กลางๆ ไม่สามารถแก้ไขปัญหารากเหง้าเชิงโครงสร้างได้" },
-  { cat: 7, axis: "trns_dirc", tag: "DIRC", pole: "b", text: "ความอดทนรอคอยระบบที่ล้มเหลวคือการปล่อยให้ผู้คนถูกกดขี่ต่อไป" },
-  { cat: 7, axis: "trns_dirc", tag: "DIRC", pole: "b", text: "การรื้อถอนโครงสร้างเก่าทั้งหมดทันทีชอบธรรมกว่าการพยายามซ่อมแซมทีละนิด" },
-  { cat: 7, axis: "trns_dirc", tag: "DIRC", pole: "b", text: "ระยะเปลี่ยนผ่านที่ยืดเยื้อมักถูกใช้เป็นข้ออ้างในการหน่วงเหนี่ยวการเปลี่ยนแปลงจริง" },
-
-  // 21. mod_rad
-  { cat: 7, axis: "mod_rad", tag: "MOD", pole: "a", text: "จุดยืนสายกลางที่รับฟังทุกฝ่ายเป็นทางออกที่ยั่งยืนที่สุดสำหรับประเทศ" },
-  { cat: 7, axis: "mod_rad", tag: "MOD", pole: "a", text: "สายกลางมักสะท้อนความจริงที่ซับซ้อนกว่าการเลือกข้างสุดขั้ว" },
-  { cat: 7, axis: "mod_rad", tag: "MOD", pole: "a", text: "การแสวงหาฉันทามติในวงกว้างดีกว่าชัยชนะเด็ดขาดของฝ่ายใดฝ่ายหนึ่ง" },
-  { cat: 7, axis: "mod_rad", tag: "MOD", pole: "a", text: "ความสุดขั้วไม่ว่าจะจากฝั่งซ้ายหรือขวาล้วนเป็นอันตรายต่อสันติภาพ" },
-  { cat: 7, axis: "mod_rad", tag: "MOD", pole: "a", text: "การบริหารจัดการสิ่งที่เป็นไปได้จริง สำคัญกว่าการวิ่งไล่ตามฝันสุดขอบ" },
-  { cat: 7, axis: "mod_rad", tag: "RAD", pole: "b", text: "ปัญหารากเหง้าของสังคมแก้ไขได้ด้วยการรื้อถอนระบบเดิมอย่างสิ้นเชิงเท่านั้น" },
-  { cat: 7, axis: "mod_rad", tag: "RAD", pole: "b", text: "ขบวนการสังคมควรตั้งเป้าหมายสูงสุดโดยไม่ลดเพดานการเรียกร้อง" },
-  { cat: 7, axis: "mod_rad", tag: "RAD", pole: "b", text: "การเผชิญหน้าและท้าทายโครงสร้างอำนาจอย่างตรงไปตรงมาเป็นความจำเป็น" },
-  { cat: 7, axis: "mod_rad", tag: "RAD", pole: "b", text: "การปฏิรูปภายในกรอบเดิมเป็นเพียงการผัดวันประกันพัก ไม่ใช่การแก้ไขจริง" },
-  { cat: 7, axis: "mod_rad", tag: "RAD", pole: "b", text: "การถูกมองว่าเป็นหัวรุนแรงไม่ใช่สิ่งที่ต้องหวาดกลัวหากเป้าหมายคือความยุติธรรม" },
-
-  // 22. polz_apol
-  { cat: 7, axis: "polz_apol", tag: "POLZ", pole: "a", text: "การเมืองสัมพันธ์กับทุกมิติของชีวิตประจำวัน และการนิ่งเฉยคือการยอมรับความอยุติธรรม" },
-  { cat: 7, axis: "polz_apol", tag: "POLZ", pole: "a", text: "ประชาชนทุกคนควรร่วมมือกันตื่นตัวและติดตามเรื่องการเมืองอย่างสม่ำเสมอ" },
-  { cat: 7, axis: "polz_apol", tag: "POLZ", pole: "a", text: "พื้นที่ส่วนตัวและวัฒนธรรมล้วนเชื่อมโยงกับโครงสร้างอำนาจการเมืองอย่างหลีกเลี่ยงไม่ได้" },
-  { cat: 7, axis: "polz_apol", tag: "POLZ", pole: "a", text: "การแสดงจุดยืนทางการเมืองในพื้นที่สาธารณะเป็นหน้าที่ของพลเมืองที่ดี" },
-  { cat: 7, axis: "polz_apol", tag: "POLZ", pole: "a", text: "การเมืองควรเป็นหัวข้อสนทนาที่เปิดกว้างและพูดคุยได้ในชีวิตประจำวัน" },
-  { cat: 7, axis: "polz_apol", tag: "APOL", pole: "b", text: "ชีวิตที่ดีคือการมุ่งเน้นพัฒนาตนเองและงานตรงหน้า โดยไมรนหาความขัดแย้งทางการเมือง" },
-  { cat: 7, axis: "polz_apol", tag: "APOL", pole: "b", text: "การเมืองเป็นเรื่องของนักการเมือง ประชาชนควรโฟกัสที่การทำมาหากินส่วนตน" },
-  { cat: 7, axis: "polz_apol", tag: "APOL", pole: "b", text: "การหลีกเลี่ยงการถกเถียงการเมืองช่วยรักษาความสัมพันธ์และสันติสุขส่วนตัวได้ดีกว่า" },
-  { cat: 7, axis: "polz_apol", tag: "APOL", pole: "b", text: "สังคมสงบเรียบร้อยกว่าเมื่อคนส่วนใหญ่ไม่ถูกระดมเข้าสู่ความขัดแย้งทางการเมือง" },
-  { cat: 7, axis: "polz_apol", tag: "APOL", pole: "b", text: "ความสุขส่วนตัวและความสำเร็จในครอบครัววัดคุณค่าชีวิตได้ดีกว่าการมีส่วนร่วมทางการเมือง" },
-
-  // 23. ind_col
-  { cat: 7, axis: "ind_col", tag: "IND", pole: "a", text: "สิทธิและอิสรภาพของปัจเจกชนละเมิดมิได้ แม้เพื่อประโยชน์ของคนส่วนใหญ่ก็ตาม" },
-  { cat: 7, axis: "ind_col", tag: "IND", pole: "a", text: "แต่ละบุคคลควรมีอิสระในการเลือกวิถีชีวิตตนเองโดยไม่ถูกแรงกดดันของกลุ่มบังคับ" },
-  { cat: 7, axis: "ind_col", tag: "IND", pole: "a", text: "ความรับผิดชอบส่วนบุคคลและการพึ่งพาตนเองเป็นค่านิยมสูงสุดของมนุษย์" },
-  { cat: 7, axis: "ind_col", tag: "IND", pole: "a", text: "สังคมไม่มีตัวตนอยู่จริง มีเพียงบุคคลและครอบครัวที่ประกอบกันขึ้นมา" },
-  { cat: 7, axis: "ind_col", tag: "IND", pole: "a", text: "ปัจเจกบุคคลไม่ควรถูกบังคับให้เสียสละเพื่อเป้าหมายของกลุ่มที่ตนไม่ได้เลือก" },
-  { cat: 7, axis: "ind_col", tag: "COL", pole: "b", text: "ผลประโยชน์และเสถียรภาพของส่วนรวมย่อมอยู่เหนือความประสงค์ของบุคคลเสมอ" },
-  { cat: 7, axis: "ind_col", tag: "COL", pole: "b", text: "ความสำเร็จและความเป็นอันหนึ่งอันเดียวของชุมชนสำคัญกว่าเอกสิทธิ์ส่วนบุคคล" },
-  { cat: 7, axis: "ind_col", tag: "COL", pole: "b", text: "หน้าที่ต่อส่วนรวมเป็นแกนกลางสำคัญของจริยธรรมและการอยู่ร่วมกัน" },
-  { cat: 7, axis: "ind_col", tag: "COL", pole: "b", text: "มนุษย์เป็นสัตว์สังคมที่ไม่สามารถแยกตัวอยู่รอดได้โดยปราศจากกลุ่มก้อน" },
-  { cat: 7, axis: "ind_col", tag: "COL", pole: "b", text: "การเสียสละประโยชน์ส่วนตนเพื่อความสุขของส่วนรวมเป็นคุณธรรมอันสูงส่ง" },
-
-  // 24. rev_peace
-  { cat: 7, axis: "rev_peace", tag: "REV", pole: "a", text: "เมื่อช่องทางปกติถูกปิดบัง การโค่นล้มระบบด้วยกำลังเป็นสิทธิที่ชอบธรรมทางประวัติศาสตร์" },
-  { cat: 7, axis: "rev_peace", tag: "REV", pole: "a", text: "การลุกฮือของประชาชนเพื่อทำลายระบบการกดขี่บางครั้งจำเป็นต้องใช้แรงต่อต้านที่รุนแรง" },
-  { cat: 7, axis: "rev_peace", tag: "REV", pole: "a", text: "การเปลี่ยนแปลงใหญ่มักไม่เคยเกิดขึ้นจากการร้องขออย่างสุภาพเพียงอย่างเดียว" },
-  { cat: 7, axis: "rev_peace", tag: "REV", pole: "a", text: "ความรุนแรงของฝ่ายผู้ถูกกดขี่คือปฏิกิริยาตอบโต้ความรุนแรงเชิงโครงสร้างของรัฐ" },
-  { cat: 7, axis: "rev_peace", tag: "REV", pole: "a", text: "การถอนรากถอนโคนระบบเดิมด้วยการต่อสู้สอดคล้องกับความจริงทางประวัติศาสตร์" },
-  { cat: 7, axis: "rev_peace", tag: "PAC", pole: "b", text: "การต่อสู้เรียกร้องต้องยึดหลักสันติวิธีและอหิงสาอย่างเด็ดขาดโดยไม่ใช้ความรุนแรง" },
-  { cat: 7, axis: "rev_peace", tag: "PAC", pole: "b", text: "การใช้กำลังและการทำลายล้างทำลายความชอบธรรมของขบวนการเรียกร้อง" },
-  { cat: 7, axis: "rev_peace", tag: "PAC", pole: "b", text: "ความรุนแรงไม่อาจนำไปสู่การสร้างความยุติธรรมที่ยั่งยืนได้ในอนาคต" },
-  { cat: 7, axis: "rev_peace", tag: "PAC", pole: "b", text: "การเจรจาและการต่อสู้ด้วยกระบวนการทางกฎหมายเป็นทางออกเดียวที่ยอมรับได้" },
-  { cat: 7, axis: "rev_peace", tag: "PAC", pole: "b", text: "ความสูญเสียชีวิตและเลือดเนื้อจากความรุนแรงเป็นสิ่งที่ไม่อาจชดเชยได้ด้วยเป้าหมายใด" },
-
-  // 25. ideal_real
-  { cat: 7, axis: "ideal_real", tag: "IDEL", pole: "a", text: "นโยบายที่ดีควรมุ่งสู่อุดมคติที่ถูกต้อง แม้ต้องแลกด้วยต้นทุนและความยากลำบากสูง" },
-  { cat: 7, axis: "ideal_real", tag: "IDEL", pole: "a", text: "สังคมควรมุ่งมั่นสู่ภาพอุดมคติแห่งความสมบูรณ์แบบแม้มันจะดูไกลเกินเอื้อม" },
-  { cat: 7, axis: "ideal_real", tag: "IDEL", pole: "a", text: "การประนีประนอมหลักการเพื่อแลกกับอำนาจทำให้การเมืองเสื่อมทรามลง" },
-  { cat: 7, axis: "ideal_real", tag: "IDEL", pole: "a", text: "เราควรกระทำในสิ่งที่ถูกต้องตามจริยธรรมโดยไม่หวั่นเกรงต่อผลลัพธ์ในความเป็นจริง" },
-  { cat: 7, axis: "ideal_real", tag: "IDEL", pole: "a", text: "อุดมคติและความเชื่ออันบริสุทธิ์คือพลังเดียวที่สามารถเปลี่ยนโลกได้จริง" },
-  { cat: 7, axis: "ideal_real", tag: "REAL", pole: "b", text: "การเมืองคือเรื่องของการคำนวณดุลอำนาจและผลผลิตที่ทำได้จริง มากกว่าฝันหวานถึงอุดมคติ" },
-  { cat: 7, axis: "ideal_real", tag: "REAL", pole: "b", text: "เป้าหมายที่บรรลุได้บางส่วนในความเป็นจริง ดีกว่าอุดมคติที่สวยงามแต่ไม่อาจเกิดขึ้นได้" },
-  { cat: 7, axis: "ideal_real", tag: "REAL", pole: "b", text: "การยอมรับความจริงอันไม่สมบูรณ์ดีกว่าการยึดติดกับภาพฝันที่ไร้ทางเป็นไปได้" },
-  { cat: 7, axis: "ideal_real", tag: "REAL", pole: "b", text: "ผู้นำที่ดีต้องมองความจริงตามที่เป็น ไม่ใช่ตามสิ่งที่อยากให้เป็น" },
-  { cat: 7, axis: "ideal_real", tag: "REAL", pole: "b", text: "ผลประโยชน์ทางยุทธศาสตร์และความอยู่รอดสำคัญกว่าความบริสุทธิ์ทางอุดมการณ์" },
-
-  // 26. conseq_deont
-  { cat: 7, axis: "conseq_deont", tag: "CONSQ", pole: "a", text: "ความถูกผิดของการกระทำวัดจากผลลัพธ์สุทธิที่เกิดขึ้นแก่คนส่วนใหญ่" },
-  { cat: 7, axis: "conseq_deont", tag: "CONSQ", pole: "a", text: "ยอมฝ่าฝืนกฎบางข้อได้หากการกระทำนั้นช่วยสร้างประโยชน์และความสุขแก่ผู้คนได้มากกว่า" },
-  { cat: 7, axis: "conseq_deont", tag: "CONSQ", pole: "a", text: "นโยบายที่ดีคือนโยบายที่ส่งผลดีรวมสูงสุด แม้จะสร้างความเสียสละให้คนบางกลุ่ม" },
-  { cat: 7, axis: "conseq_deont", tag: "CONSQ", pole: "a", text: "การประเมินการกระทำควรพิจารณาที่ผลกระทบในชีวิตจริงมากกว่าเจตนา" },
-  { cat: 7, axis: "conseq_deont", tag: "CONSQ", pole: "a", text: "เป้าหมายที่ยิ่งใหญ่และสร้างประโยชน์รวมย่อมสร้างความชอบธรรมให้แก่วิธีการ" },
-  { cat: 7, axis: "conseq_deont", tag: "DEON", pole: "b", text: "มีหลักจริยธรรมบางอย่างที่เป็นหน้าที่สัมบูรณ์ซึ่งห้ามละเมิด ไม่ว่าผลลัพธ์จะเป็นอย่างไร" },
-  { cat: 7, axis: "conseq_deont", tag: "DEON", pole: "b", text: "การทำร้ายหรือละเมิดสิทธิผู้บริสุทธิ์เป็นสิ่งที่ทำไม่ได้ แม้จะช่วยคนได้อีกนับล้าน" },
-  { cat: 7, axis: "conseq_deont", tag: "DEON", pole: "b", text: "หน้าที่และกติกาศีลธรรมต้องถูกรักษาไว้อย่างเคร่งครัดโดยไม่คำนวณกำไรขาดทุน" },
-  { cat: 7, axis: "conseq_deont", tag: "DEON", pole: "b", text: "วิธีการที่ไม่ชอบธรรมย่อมทำให้เป้าหมายที่ได้มาสูญเสียความบริสุทธิ์ไป" },
-  { cat: 7, axis: "conseq_deont", tag: "DEON", pole: "b", text: "ความยุติธรรมอยู่ที่การยึดมั่นในหลักการและหน้าที่ ไม่ใช่การประเมินผลลัพธ์สุทธิ" }
+// 260 REWRITTEN VALUE-DILEMMA QUESTIONS (Natural Language Style)
+const rawQuestionsData = [];
+const axisList = [
+  "soc_cap", "pln_mkt", "merit_eq", "auth_lib", "dem_autc", "local_cent", "techno_pop",
+  "univ_part", "glob_nat", "prog_trad", "refm_cons", "sec_rel", "multi_mono", "eqal_hier",
+  "acc_dec", "trans_prim", "coml_civl", "pun_rehb", "cmpr_pers", "trns_dirc", "mod_rad",
+  "polz_apol", "ind_col", "rev_peace", "ideal_real", "conseq_deont"
 ];
+
+// Helper to generate natural dilemma wording templates for 260 questions
+const dilemmaTemplates = {
+  soc_cap: [
+    "ถ้าความขยันสร้างความมั่งคั่งมหาศาลให้คนหนึ่งคน แต่รอบตัวเขายังมีคนอดมื้อกินมื้อ เขาควรได้เก็บผลประโยชน์ไว้คนเดียว หรือมีหน้าที่แบ่งปันประคองคนอื่น?",
+    "ปัจจัยการผลิตและกิจการขนาดใหญ่ในประเทศ ควรกระจายให้ทุกคนเป็นเจ้าของร่วมกันผ่านสาธารณะ หรือปล่อยให้เอกชนเข้าแข่งขันดูแล?",
+    "ความเหลื่อมล้ำที่คุณเห็นในสังคม ทุกวันนี้เกิดจากความอยุติธรรมของโครงสร้างกติกา หรือเกิดจากระดับความขยันและพรสวรรค์ส่วนบุคคล?",
+    "ปัจจัยสี่อย่างบ้านและหมอ ควรถูกมองเป็นสิทธิพื้นฐานที่แจกจ่ายฟรี หรือเป็นสินค้าในระบบตลาดที่ต้องจ่ายตามราคา?",
+    "การที่มหาเศรษฐีสะสมเงินทองได้นับล้านล้าน เป็นสัญญาณของความสำเร็จทางเศรษฐกิจ หรือเป็นการดึงเอาส่วนแบ่งไปจากคนส่วนใหญ่?",
+    "ความอยากมี อยากได้ และความมั่งคั่งส่วนตน คือเครื่องยนต์หลักที่ขับเคลื่อนให้มนุษย์สร้างสรรค์สิ่งใหม่ๆ ใช่หรือไม่?",
+    "การเปิดโอกาสให้บริษัทเอกชนแข่งกันทำงาน ให้คุณภาพและประสิทธิภาพที่ดีกว่าหน่วยงานรัฐจัดการเองเสมอ ใช่หรือไม่?",
+    "ถ้าคนคนหนึ่งมีความสามารถสูงจนสร้างมูลค่าให้สังคมได้มหาศาล เป็นเรื่องชอบธรรมแล้วที่เขาจะร่ำรวยกว่าคนทั่วไปหลายร้อยเท่า?",
+    "การเก็บภาษีคนรวยในอัตราที่สูงมากเพื่อไปอุ้มคนจน คือการทำลายแรงจูงใจของคนขยันและคนที่ประสบความสำเร็จในสังคม?",
+    "สิทธิในทรัพย์สินที่หามาได้ด้วยน้ำพักน้ำแรง ควรเป็นสิทธิสัมบูรณ์ที่ใครหรือรัฐก็ไม่มีสิทธิ์เข้ามาจัดสรรใหม่?"
+  ],
+  pln_mkt: [
+    "ยามที่ของจำเป็นขาดแคลนหนัก เราควรปล่อยให้คนสู้ราคาตามกลไกตลาด หรือให้รัฐเข้าแทรกแซงคุมราคาเพื่อกระจายให้ทุกคน?",
+    "การอุดหนุนและคุมราคาสินค้าเกษตรโดยรัฐ เป็นเรื่องจำเป็นเพื่อปากท้องประชาชน หรือเป็นการทำลายระบบการค้าเสรี?",
+    "กิจการพลังงานและโครงสร้างพื้นฐาน ควรถูกกำหนดทิศทางโดยแผนแม่บทของรัฐบาล มากกว่าปล่อยให้เอกชนดำเนินตามกำไร?",
+    "ในยามเศรษฐกิจถดถอยหนัก รัฐควรใช้อำนาจสั่งการการผลิตและสินค้าเพื่อประคองประเทศ หรือปล่อยให้ตลาดปรับตัวตามธรรมชาติ?",
+    "การให้ผู้คนแลกเปลี่ยนและตั้งราคาได้อย่างอิสระ ตอบสนองความต้องการของมนุษย์ได้ดีกว่าการวางแผนจากส่วนกลางเสมอ?",
+    "ราคาสินค้าและบริการในตลาด ควรปรับเปลี่ยนตามอุปสงค์และอุปทาน โดยไม่ควรมีภาครัฐเข้ามาตั้งกำแพงควบคุม?",
+    "การที่รัฐพยายามเข้ามาแทรกแซงและควบคุมราคาสินค้า มักจบลงด้วยการเกิดสินค้าขาดแคลนและตลาดมืดใช่หรือไม่?",
+    "การถ่ายโอนแปรรูปกิจการของรัฐไปให้เอกชนบริหาร ช่วยลดงบประมาณแผ่นดินและเพิ่มคุณภาพการบริการได้ดีกว่า?",
+    "กลไกตลาดเสรีมีความสามารถในการจัดสรรทรัพยากรที่จำกัดได้อย่างมีประสิทธิภาพสูงสุดในตัวเองอยู่แล้ว?",
+    "การปล่อยให้เสรีภาพทางการค้าทำงานโดยไม่มีรัฐคุม คือทางออกที่ดีที่สุดในการสร้างความเติบโตทางเศรษฐกิจ?"
+  ],
+  merit_eq: [
+    "ในสนามแข่งชีวิตที่ทุกคนเริ่มจากจุดต่างกัน ความเป็นธรรมคือการใช้กติกาเดียวกัน หรือการช่วยคนเสียเปรียบให้ขยับมาใกล้กันก่อนแข่ง?",
+    "คนขยันและมีศักยภาพสูง สมควรได้รับผลตอบแทนในระดับที่ทิ้งห่างคนอื่นอย่างมหาศาล โดยถือเป็นเรื่องชอบธรรมตามผลงาน?",
+    "สังคมไม่จำเป็นต้องเข้าไปชดเชยหรืออุ้มชู ผู้ที่ต้องประสบความล้มเหลวจากการตัดสินใจและเลือกทางเดินที่ผิดพลาดของตนเอง?",
+    "การยื่นโอกาสที่เท่าเทียมกันในการเริ่มต้น Important กว่าการพยายามดึงทุกคนให้เข้าเส้นชัยและมีผลลัพธ์ใกล้เคียงกัน?",
+    "การตั้งโควตาหรือสิทธิพิเศษให้กลุ่มคนที่เสียเปรียบ คือการทำลายระบบคุณธรรมความสามารถ และสร้างความอยุติธรรมรูปแบบใหม่?",
+    "เป้าหมายสูงสุดของสังคมมนุษย์ คือการทำให้ทุกคนมีระดับคุณภาพชีวิตและผลลัพธ์ที่ได้รับใกล้เคียงกันที่สุด?",
+    "ความสำเร็จส่วนใหญ่ในชีวิตมนุษย์ มาจากโชคและต้นทุนเดิมที่ติดตัวมาแต่เกิด มากกว่าความสามารถและแรงกายส่วนตัวล้วนๆ?",
+    "รัฐควรมีมาตรการลดช่องว่างรายได้ เพื่อไม่ให้คนร่ำรวยที่สุดและคนยากจนที่สุด มีฐานะความเป็นอยู่ที่แตกต่างกันเกินไป?",
+    "มาตรการชดเชยและมอบเอกสิทธิ์แก่ผู้ด้อยโอกาส เป็นความจำเป็นขั้นพื้นฐานเพื่อสร้างความเท่าเทียมกันที่เกิดขึ้นได้จริง?",
+    "ผลตอบแทนจากการทำงาน ควรคำนึงถึงความจำเป็นในการดำรงชีวิตของมนุษย์ มากกว่ายศตำแหน่งหรือความเชี่ยวชาญ?"
+  ],
+  auth_lib: [
+    "ถ้าเมืองที่คุณอยู่ปลอดภัยขึ้นมากจนเดินตอนดึกได้สบายใจ แต่ต้องแลกกับการถูกกล้องของรัฐบันทึกชีวิตตลอดเวลา คุณยอมแลกไหม?",
+    "ความสงบเรียบร้อยและความมั่นคงของสังคมโดยรวม สำคัญและทรงคุณค่ามากกว่าความต้องการเสรีภาพส่วนบุคคล?",
+    "รัฐควรมีอำนาจสอดส่องข้อมูลพฤติกรรมประชาชน หากสิ่งนั้นช่วยป้องกันการก่ออาชญากรรมและภัยคุกคามในสังคมได้?",
+    "ในยามที่บ้านเมืองเผชิญวิกฤต การมีผู้นำที่เข้มแข็งและใช้อำนาจเด็ดขาด จำเป็นสำหรับการนำพาประเทศรอดพ้น?",
+    "รัฐบาลมีสิทธิชอบธรรมในการจำกัดการแสดงออกของประชาชน หากการแสดงออกนั้นเสี่ยงทำให้เกิดความวุ่นวายในบ้านเมือง?",
+    "มนุษย์ทุกคนควรมีสิทธิเลือกวิถีชีวิตตนเองตราบใดที่ไม่ทำร้ายผู้อื่น โดยไม่จำเป็นต้องมีกฎระเบียบของรัฐมาคอยสั่งการ?",
+    "เสรีภาพในการพูดและแสดงความคิดเห็น เป็นสิทธิสัมบูรณ์ที่ไม่ควรถูกจำกัดหรือปิดปากไม่ว่าด้วยเหตุผลใดก็ตาม?",
+    "การที่รัฐบาลเข้ามาแอบสอดส่องข้อมูลส่วนตัวของประชาชน ถือเป็นการละเมิดสิทธิมนุษยชนขั้นร้ายแรงที่รับไม่ได้?",
+    "การให้อำนาจแก่รัฐบาลมากเกินไป คือภัยคุกคามที่อันตรายที่สุดต่อเสรีภาพและอิสรภาพในการดำรงชีวิตของมนุษย์?",
+    "ประชาชนทุกคนควรมีสิทธิในการวิพากษ์วิจารณ์และต่อต้านการใช้อำนาจรัฐที่ไม่ชอบธรรมได้ตลอดเวลา?"
+  ],
+  dem_autc: [
+    "เมื่อประเทศเผชิญวิกฤต คุณเชื่อในการถกเถียงของคนส่วนใหญ่ในสภาที่ช้า หรือเชื่อในผู้นำเด็ดขาดคนเดียวที่สั่งการได้ทันที?",
+    "การเลือกตั้งที่เสรีและเปิดกว้าง คือหัวใจสำคัญเดียวในการสร้างความชอบธรรมให้แก่ผู้ที่จะเข้ามาบริหารประเทศ?",
+    "ประชาชนทุกคนไม่ว่าจะมีความรู้ระดับใด ควรมีสิทธิลงมติตัดสินใจในเรื่องสำคัญของบ้านเมืองอย่างเท่าเทียมกัน?",
+    "การมีพรรคการเมืองที่หลากหลาย ช่วยสะท้อนเจตจำนงและความต้องการที่แท้จริงของคนในชาติได้ดีที่สุด?",
+    "มติของคนส่วนใหญ่ในระบบรัฐสภา คือผู้กำหนดทิศทางประเทศที่ถูกต้องและชอบธรรมที่สุดเสมอ?",
+    "ผู้เชี่ยวชาญที่มีความรู้ลึกซึ้ง ควรมีอำนาจตัดสินใจมากกว่าการปล่อยให้มวลชนเลือกตามอารมณ์ความรู้สึก?",
+    "สถาบันการปกครองแบบดั้งเดิม ช่วยรักษาเสถียรภาพของชาติได้ดีกว่าระบบเลือกตั้งที่ผันผวนตามกระแส?",
+    "ระบบการเมืองที่มีหลายพรรค มักสร้างความแตกแยกรุนแรงและทำให้การพัฒนาประเทศหยุดชะงัก?",
+    "การบริหารประเทศที่มีประสิทธิภาพในบางสถานการณ์ จำเป็นต้องใช้อำนาจเบ็ดเสร็จโดยไม่ต้องรอการอนุมัติจากสภา?",
+    "การปล่อยให้ประชาชนที่ไม่เข้าใจข้อมูลเชิงลึกตัดสินใจเรื่องใหญ่ อาจนำไปสู่ภัยพิบัติทางการเมือง?"
+  ],
+  local_cent: [
+    "คนในพื้นที่ควรมีอำนาจตัดสินใจเรื่องกฎหมายและภาษีของตัวเองทั้งหมด หรือรัฐส่วนกลางควรคุมกติกาเดียวกันทั้งประเทศ?",
+    "ภาษีที่เก็บได้ในท้องถิ่น ควรถูกนำมาใช้พัฒนาพื้นที่นั้นเป็นหลัก ก่อนที่จะถูกส่งเข้าคลังหลวงส่วนกลาง?",
+    "หากกฎหมายส่วนกลางไปขัดแย้งกับวิถีชีวิตของคนในพื้นที่ ชุมชนควรมีสิทธิปรับใช้กติกาเฉพาะของตนเองได้?",
+    "โครงการพัฒนาขนาดใหญ่ของรัฐ ไม่ควรถูกสร้างขึ้นอย่างเด็ดขาดหากประชาชนในพื้นที่ตรงนั้นคัดค้าน?",
+    "การกระจายอำนาจการตัดสินใจลงสู่ระดับท้องถิ่น ช่วยป้องกันปัญหาการทุจริตและการรวมศูนย์อำนาจได้ดีกว่า?",
+    "การมีมาตรฐานกฎหมาย นโยบาย และการศึกษาเดียวกันทั่วประเทศ ช่วยป้องกันความเหลื่อมล้ำระหว่างเมืองได้ดีที่สุด?",
+    "รัฐบาลส่วนกลางจำเป็นต้องมีอำนาจเหนืองบประมาณ เพื่อนำเงินจากพื้นที่ร่ำรวยไปอุดหนุนพื้นที่ยากจน?",
+    "การปล่อยให้ท้องถิ่นมีอำนาจมากเกินไป มักนำไปสู่ระบบอิทธิพลและซุ้มมือปืนเจ้าถิ่นในพื้นที่?",
+    "การตัดสินใจเชิงยุทธศาสตร์ของประเทศ ต้องยึดผลประโยชน์รวมของคนส่วนใหญ่ แม้จะกระทบคนบางพื้นที่ก็ตาม?",
+    "เอกภาพและความมั่นคงของชาติจะเกิดขึ้นได้ ก็ต่อเมื่อการสั่งการและกติกาถูกรวมไว้ที่ส่วนกลางเท่านั้น?"
+  ],
+  techno_pop: [
+    "เรื่องซับซ้อนอย่างเศรษฐกิจ เราควรเชื่อสถิติของนักวิชาการผู้เชี่ยวชาญ หรือเคารพความรู้สึกของคนหาเช้ากินค่ำที่กระทบจริง?",
+    "ข้อมูลเชิงประจักษ์และงานวิจัยทางวิทยาศาสตร์ คือเครื่องมือเดียวที่เชื่อถือได้ในการวางนโยบายพัฒนาประเทศ?",
+    "นโยบายการเงินและเศรษฐกิจ ควรดูแลโดยองค์กรอิสระทางเทคนิคที่ปราศจากการแทรกแซงทางการเมือง?",
+    "เสียงของมวลชนที่ไม่เข้าใจข้อมูลเชิงลึก มักนำไปสู่นโยบายประชานิยมที่สร้างภัยพิบัติระยะยาวให้ประเทศ?",
+    "การตัดสินใจเรื่องสำคัญของบ้านเมือง ควรใช้หลักวิชาการนำหน้าความพึงพอใจเฉพาะหน้าของประชาชน?",
+    "เจตจำนงและความต้องการของประชาชนส่วนใหญ่ สำคัญและทรงคุณค่ามากกว่าความคิดเห็นของนักวิชาการ?",
+    "สามัญสำนึกและประสบการณ์ตรงของคนธรรมดา มักแก้ปัญหาชีวิตจริงได้ดีกว่าทฤษฎีในตำราของคนฉลาด?",
+    "เทคโนแครตและผู้เชี่ยวชาญมักรับใช้ชนชั้นนำ และหลุดพ้นจากความจริงของคนหาเช้ากินค่ำในสังคม?",
+    "หากผลการศึกษาวิจัยขัดแย้งกับความต้องการของประชาชน รัฐบาลที่ดีต้องเลือกทำตามประชาชน?",
+    "อำนาจการตัดสินใจสูงสุดควรมาจากประชามติตรงของประชาชน ไม่ใช่ให้กลุ่มคนฉลาดมาคิดแทน?"
+  ],
+  univ_part: [
+    "เมื่อค่านิยมสิทธิมนุษยชนโลกสากล ขัดกับวัฒนธรรมดั้งเดิมของท้องถิ่น ชาตินั้นควรปรับตามโลก หรือรักษาวิถีเดิมไว้?",
+    "ศาลอาญาระหว่างประเทศควรมีอำนาจตัดสินผู้นำที่ก่ออาชญากรรมต่อมนุษยชาติในทุกประเทศโดยไม่มีข้อเว้น?",
+    "ประเทศร่ำรวยมีหน้าที่ทางศีลธรรมในการช่วยเหลือประเทศยากจน โดยไม่ควรหวังผลตอบแทนทางการเมือง?",
+    "การยับยั้งการล้างเผ่าพันธุ์ในต่างแดน เป็นความชอบธรรมทางการทหารระดับสากลที่ทุกชาติควรสนับสนุน?",
+    "มนุษย์ทุกคนบนโลกมีศักดิ์ศรีและสิทธิเท่าเทียมกัน ไม่ว่าจะเกิดภายใต้พรมแดนของประเทศใดก็ตาม?",
+    "แต่ละประเทศมีบริบทประวัติศาสตร์เฉพาะตัว จึงไม่มีระบบการเมืองหรือจริยธรรมใดที่ใช้ได้กับทุกชาติ?",
+    "องค์กรระหว่างประเทศไม่ควรเข้ามาแทรกแซงกระบวนการยุติธรรมภายในของชาติอธิปไตยอื่น?",
+    "งบประมาณแผ่นดินควรถูกทุ่มเทช่วยเหลือประชาชนในประเทศตนเองก่อนที่จะส่งออกไปช่วยต่างแดน?",
+    "การส่งทหารไปทำสงครามต่างแดน เป็นการสูญเสียชีวิตและงบประมาณของคนในชาติโดยไม่จำเป็น?",
+    "มาตรฐานจริยธรรมของโลกสากล มักเป็นเพียงเครื่องมือของชาติมหาอำนาจในการกดขี่ชาติที่เล็กกว่า?"
+  ],
+  glob_nat: [
+    "หน้าที่แรกของรัฐคือการปกป้องคนในชาติตนเองก่อน หรือเราควรคำนึงถึงความเป็นมนุษย์เท่าเทียมกันไม่ว่าจะอยู่ชาติไหน?",
+    "การเปิดเสรีพรมแดนและการค้าข้ามชาติ ช่วยยกระดับคุณภาพชีวิตและความมั่งคั่งของมนุษย์โดยรวมได้ดีที่สุด?",
+    "การมองตนเองเป็นพลเมืองโลกที่มีความรับผิดชอบ สำคัญกว่าการยึดติดอยู่กับความรู้สึกชาตินิยม?",
+    "ข้อตกลงและสนธิสัญญาระหว่างประเทศ ควรมีอำนาจบังคับเหนือข้อบังคับกฎหมายภายในประเทศ?",
+    "การรวมกลุ่มทางเศรษฐกิจระดับภูมิภาค ช่วยสร้างสันติภาพและความมั่งคั่งในระยะยาวได้มากกว่าการแยกตัว?",
+    "หน้าที่สำคัญที่สุดของรัฐ คือการปกป้องผลประโยชน์และความปลอดภัยของคนในชาติตนเองก่อนเสมอ?",
+    "การควบคุมพรมแดนอย่างเข้มงวด จำเป็นต่อการรักษาเสถียรภาพ ความปลอดภัย และวัฒนธรรมของชาติ?",
+    "การพึ่งพาเศรษฐกิจโลกมากเกินไป ทำให้ประเทศอ่อนแอและสูญเสียอำนาจต่อรองในยามเกิดวิกฤต?",
+    "ภาษีศุลกากรเป็นเครื่องมือจำเป็น ในการปกป้องอุตสาหกรรมและแรงงานภายในประเทศจากการแข่งขันภายนอก?",
+    "ความรักชาติและความภักดีต่อประเทศตนเอง คือรากฐานสำคัญที่สุดในการสร้างความสามัคคีในสังคม?"
+  ],
+  prog_trad: [
+    "เมื่อธรรมเนียมดั้งเดิมเริ่มขัดแย้งกับเสรีภาพคนรุ่นใหม่ สังคมควรเคารพรากเหง้าดั้งเดิม หรือกล้าตัดทิ้งเพื่อเปิดทางให้ค่านิยมใหม่?",
+    "ความหลากหลายทางเพศและรูปแบบครอบครัวใหม่ๆ ควรได้รับการยอมรับทางกฎหมายอย่างเท่าเทียมกับแบบดั้งเดิม?",
+    "สัญลักษณ์หรืออนุสาวรีย์ที่เกี่ยวข้องกับการกดขี่ในอดีต ควรถูกปลดออกหรือทบทวนเพื่อความก้าวหน้า?",
+    "การศึกษาควรส่งเสริมการวิพากษ์วิจารณ์บรรทัดฐานดั้งเดิม มากกว่าการปลูกฝังการเชื่อฟังผู้ใหญ่?",
+    "ค่านิยมใหม่ๆ ทางสังคม ช่วยขยายขอบเขตสิทธิเสรีภาพและความเท่าเทียมของมนุษย์ให้เปิดกว้างขึ้น?",
+    "จารีตประเพณีและสถาบันดั้งเดิม ช่วยรักษาเสถียรภาพของสังคมไม่ให้พังทลายลงตามกระแสผันผวน?",
+    "โครงสร้างครอบครัวแบบดั้งเดิมที่มีพ่อแม่ชายหญิง เป็นรากฐานที่เข้มแข็งและดีที่สุดของสังคม?",
+    "ประวัติศาสตร์และมรดกของบรรพบุรุษ คือสิ่งล้ำค่าที่ไม่ควรถูกทำลายด้วยความรู้สึกของคนในปัจจุบัน?",
+    "การศึกษาที่ดีควรเน้นเรื่องระเบียบวินัย ความกตัญญู และการเคารพผู้มีอาวุโสกว่า?",
+    "การเร่งรัดรับค่านิยมสมัยใหม่มากเกินไป ทำให้สังคมสูญเสียศีลธรรมและความผูกพันระหว่างผู้คน?"
+  ],
+  refm_cons: [
+    "เมื่อระบบสังคมมีปัญหา การซ่อมแซมระบบเดิมที่มีอยู่อย่างระมัดระวัง หรือการรื้อกติกาเก่าแล้วสร้างใหม่ทันที ทางไหนที่คุณไว้ใจกว่า?",
+    "การปฏิรูปกฎหมายที่ล้าสมัยทันที ช่วยป้องกันวิกฤตและความขัดแย้งที่อาจเกิดขึ้นในอนาคตได้ดีกว่า?",
+    "ภาคประชาชนควรมีช่องทางในการผลักดันการเปลี่ยนแปลงเชิงโครงสร้างได้อย่างรวดเร็วและตรงไปตรงมา?",
+    "การทดลองนโยบายสังคมใหม่ๆ เป็นสิ่งจำเป็นในการแสวงหาคุณภาพชีวิตที่ดีกว่าเดิมของประชาชน?",
+    "สถาบันเก่าแก่ที่ไม่ยอมปรับตัวตามความต้องการของยุคสมัย สมควรถูกปฏิรูปอย่างรุนแรงและเด็ดขาด?",
+    "การรักษาสถานะเดิมและเปลี่ยนผ่านอย่างระมัดระวัง ปลอดภัยกว่าการเสี่ยงกับสิ่งที่ไม่คุ้นเคย?",
+    "ความต่อเนื่องและความนิ่งของสถาบันหลัก ช่วยให้ประเทศดำเนินไปได้อย่างมั่นคงที่สุด?",
+    "การรักษาระบบที่พิสูจน์แล้วว่าใช้งานได้จริง ดีกว่าการทำลายเพื่อสร้างระบบใหม่ที่เสี่ยงโกลาหล?",
+    "กฎหมายและระเบียบที่มีมายาวนาน ช่วยป้องกันความสับสนวุ่นวายและการจลาจลในบ้านเมืองได้ดีที่สุด?",
+    "การเปลี่ยนแปลงที่เร็วเกินไป มักนำไปสู่ความขัดแย้งรุนแรงและผลกระทบเชิงลบที่ไม่คาดคิด?"
+  ],
+  sec_rel: [
+    "ในการร่างกฎหมายบ้านเมือง เราควรตัดหลักคำสอนทางศาสนาออกไปให้หมด หรือให้ศาสนาเข้ามาเป็นเข็มทิศชี้นำจิตใจคน?",
+    "งบประมาณแผ่นดินจากภาษีประชาชน ไม่ควรถูกนำไปใช้อุดหนุนหรือเผยแผ่ศาสนาใดๆ ทั้งสิ้น?",
+    "สัญลักษณ์และพิธีกรรมทางศาสนา ไม่ควรถูกนำมารวมในกิจกรรมที่เป็นทางการของภาครัฐ?",
+    "การตัดสินทางจริยธรรมของรัฐ ควรยึดหลักเหตุผลและสิทธิมนุษยชน ไม่ใช่ข้อห้ามตามคำสอนทางศาสนา?",
+    "ศรัทธาทางศาสนาเป็นเรื่องส่วนบุคคลโดยสมบูรณ์ และไม่ควรมีบทบาทในการชี้นำทิศทางการเมือง?",
+    "หลักธรรมคำสอนทางศาสนา เป็นรากฐานสำคัญที่สุดของจริยธรรมในการปกครองบ้านเมืองให้สงบสุข?",
+    "รัฐควรอุปถัมภ์และคุ้มครองศาสนาหลักของชาติ เพื่อรักษาศูนย์รวมจิตใจและความเป็นหนึ่งเดียวของประชาชน?",
+    "กฎหมายเกี่ยวกับครอบครัว ศีลธรรม และความประพฤติ ควรยึดตามหลักศาสนธรรมดั้งเดิม?",
+    "ผู้นำทางการเมืองที่ดี ควรเป็นผู้ที่มีความศรัทธาและปฏิบัติตามหลักศาสนาอย่างเคร่งครัด?",
+    "การตัดศาสนาออกไปจากรัฐ ทำให้สังคมเจริญเพียงแค่วัตถุ แต่เสื่อมโทรมทางจิตใจอย่างหนัก?"
+  ],
+  multi_mono: [
+    "สังคมจะงดงามกว่าเมื่อเปิดรับวัฒนธรรมที่ต่างกันของคนหลากกลุ่ม หรือเมื่อทุกคนหลอมรวมเป็นวัฒนธรรมเดียวเพื่อความกลมกลืน?",
+    "ผู้ย้ายถิ่นฐานควรรักษาวัฒนธรรมเดิมของตนควบคู่กับการเรียนรู้วัฒนธรรมใหม่ของประเทศที่ย้ายไป?",
+    "รัฐควรสนับสนุนงบประมาณในการรักษาภาษาและประเพณีของชนกลุ่มน้อยอย่างแข็งขัน?",
+    "หลักสูตรการศึกษาควรสะท้อนมุมมองและประวัติศาสตร์ของหลายวัฒนธรรมที่ไม่ใช่แค่กลุ่มหลัก?",
+    "พหุวัฒนธรรมและการเปิดรับความหลากหลาย เป็นพัฒนาการปกติและเป็นจุดแข็งของโลกยุคปัจจุบัน?",
+    "สังคมที่มีวัฒนธรรมและเอกลักษณ์กลมกลืนเป็นหนึ่งเดียว จะสงบสุขและขัดแย้งน้อยกว่า?",
+    "ผู้เข้ามาอยู่ใหม่ควรปรับตัวและกลืนกลายเข้าสู่วัฒนธรรมหลักของประเทศอย่างสมบูรณ์?",
+    "การใช้ภาษาราชการภาษาเดียวและวัฒนธรรมเดียว ช่วยลดความขัดแย้งและสร้างเอกภาพได้ดีที่สุด?",
+    "การรักษาเอกลักษณ์วัฒนธรรมดั้งเดิมของชาติ สำคัญกว่าการเปิดรับความหลากหลายจากภายนอก?",
+    "พหุวัฒนธรรมที่มากเกินไป นำไปสู่การแตกแยกเป็นกลุ่มก้อนและทำให้สังคมขาดความไว้เนื้อเชื่อใจ?"
+  ],
+  eqal_hier: [
+    "สังคมที่ทุกคนเสมอภาคกันโดยไม่มีใครไม่อยู่ใต้อำนาจใคร คือจุดสูงสุดที่ควรไปให้ถึง หรือลำดับชั้นและอาวุโสคือสิ่งที่สร้างระเบียบ?",
+    "อำนาจการตัดสินใจในสังคมควรกระจายอย่างเท่าเทียม ไม่ควรรวมศูนย์อยู่ที่กลุ่มชนชั้นนำ?",
+    "การสร้างความตระหนักรู้เรื่องสิทธิเท่าเทียมกัน ช่วยลดการกดขี่ทางสังคมลงได้อย่างยั่งยืน?",
+    "ไม่มีมนุษย์คนใดเกิดมาพร้อมกับสิทธิพิเศษเหนือผู้อื่นโดยกำเนิด ไม่ว่าจะมียศตำแหน่งใดก็ตาม?",
+    "การเคารพผู้คนอย่างเท่าเทียมกันโดยไม่สนฐานะหรือยศถาบรรดาศักดิ์ คือค่านิยมสูงสุดของมนุษย์?",
+    "ลำดับชั้นและบทบาทที่แตกต่างกันในสังคม เป็นเรื่องธรรมชาติที่ช่วยให้ระบบทำงานได้อย่างมีระเบียบ?",
+    "ผู้มีคุณวุฒิ ประสบการณ์ หรือฐานะสูงกว่า สมควรได้รับความเคารพและสถานะพิเศษในสังคม?",
+    "การพยายามทำให้ทุกคนเท่ากันในทุกเรื่อง เป็นการทำลายระเบียบและคุณค่าของความดีงาม?",
+    "ผู้นำและชนชั้นบริหารจำเป็นต้องมีสถานะและอำนาจที่สูงกว่า เพื่อให้สามารถควบคุมสังคมได้?",
+    "สังคมที่มีความเคารพตามลำดับอาวุโสและบทบาทหน้าที่ ช่วยลดความวุ่นวายและความขัดแย้งลงได้?"
+  ],
+  acc_dec: [
+    "เราควรกดคันเร่งพัฒนา AI และเทคโนโลยีใหม่ให้เร็วที่สุดเพื่ออนาคต แม้เสี่ยงคนตกงาน หรือควรชะลอเพื่อให้มนุษย์ปรับตัวทัน?",
+    "นวัตกรรมและเทคโนโลยีใหม่ๆ เป็นเครื่องมือหลักในการแก้ปัญหาความยากจนและโรคภัยไข้เจ็บ?",
+    "การสำรวจและวิจัยทางวิทยาศาสตร์ใหม่ๆ ควรกระทำโดยไม่มีกฎระเบียบของรัฐมาคอยหน่วงรั้ง?",
+    "ความเสี่ยงที่เกิดจากเทคโนโลยีใหม่ ควรแก้ด้วยการสร้างเทคโนโลยีที่ก้าวหน้ายิ่งกว่าเดิมขึ้นมาสู้?",
+    "การเปลี่ยนแปลงทางเทคโนโลยีอย่างรวดเร็ว คือสัญญาณที่ชัดเจนที่สุดของความเจริญของมนุษยชาติ?",
+    "การเติบโตทางเทคโนโลยีที่รวดเร็วเกินไป กำลังทำลายความเป็นมนุษย์และสิ่งแวดล้อมอย่างร้ายแรง?",
+    "หลักความระมัดระวังล่วงหน้า ควรกำกับนวัตกรรมใหม่ๆ ก่อนที่จะปล่อยออกสู่สาธารณะเสมอ?",
+    "ทรัพยากรควรทุ่มเทแก้ปัญหาสังคมในปัจจุบัน ก่อนที่จะเอาไปลงทุนในโครงการเทคโนโลยีล้ำยุค?",
+    "การทดลองทางวิทยาศาสตร์ที่เสี่ยงต่อระบบนิเวศและความปลอดภัย ควรถูกสั่งห้ามอย่างเด็ดขาด?",
+    "การควบคุมอัตราการพัฒนาเทคโนโลยี ช่วยให้มนุษย์มีเวลาปรับตัวและดำรงชีวิตได้อย่างปลอดภัยกว่า?"
+  ],
+  trans_prim: [
+    "หากเทคโนโลยีสามารถดัดแปลงพันธุกรรมหรือผสานชิปเพื่อขจัดโรคและยืดอายุได้ นี่คือก้าวต่อไป หรือคือการทำลายธรรมชาติมนุษย์?",
+    "การดัดแปลงพันธุกรรมเพื่อเพิ่มสติปัญญาและศักยภาพมนุษย์ เป็นก้าวต่อไปที่ชอบธรรมของวิวัฒนาการ?",
+    "การผสานร่างกายเข้ากับเทคโนโลยีและชิปประมวลผล ช่วยขยายขอบเขตความรู้และความสามารถของมนุษย์?",
+    "มนุษย์ทุกคนควรมีสิทธิในการปรับแต่งและอัปเกรดร่างกายตนเองด้วยเทคโนโลยีตามความปรารถนา?",
+    "ข้อจำกัดทางกายภาพตามธรรมชาติ เช่น ความแก่และความตาย เป็นสิ่งที่มนุษย์ควรก้าวข้ามไปให้ได้?",
+    "การยอมรับธรรมชาติและความเป็นมนุษย์ดั้งเดิม คือรากฐานสำคัญที่สุดของความหมายในชีวิต?",
+    "ความแก่ ความเจ็บ และความตาย เป็นส่วนหนึ่งของธรรมชาติที่ไม่ควรมาร่างกฎหมายดัดแปลงแก้ไข?",
+    "วิถีชีวิตที่เรียบง่ายและใกล้ชิดธรรมชาติ สร้างความสุขที่แท้จริงได้มากกว่าชีวิตที่พึ่งพาเทคโนโลยี?",
+    "การพึ่งพาอุปกรณ์ดัดแปลงร่างกายมากเกินไป ทำให้มนุษย์สูญเสียคุณค่าและจิตวิญญาณดั้งเดิมไป?",
+    "การแทรกแซงพันธุกรรมมนุษย์เป็นเรื่องอันตราย และเป็นการละเมิดความบริสุทธิ์ของธรรมชาติ?"
+  ],
+  coml_civl: [
+    "ความยุติธรรมอยู่ที่การยึดตัวบทกฎหมายลายลักษณ์อักษรเป๊ะๆ ไม่เว้นใคร หรืออยู่ที่ผู้พิพากษาใช้ดุลพินิจชั่งน้ำหนักตามชีวิตจริง?",
+    "ผู้พิพากษาควรมีดุลพินิจในการตีความกฎหมาย เพื่อให้สอดคล้องกับบริบทความเป็นจริงในสังคม?",
+    "บรรทัดฐานคำตัดสินในอดีตและคดีตัวอย่าง ควรเป็นหลักการสำคัญในการพิจารณาตัดสินคดีความ?",
+    "ระบบคณะลูกขุนสามัญชน ช่วยเพิ่มความชอบธรรมและความเป็นธรรมแก่คำตัดสินในคดีความได้ดีกว่า?",
+    "กฎหมายที่พัฒนามาจากเหตุการณ์จริง ยืดหยุ่นและเป็นธรรมกว่าประมวลกฎหมายที่เขียนไว้ล่วงหน้า?",
+    "การตัดสินคดีความ ต้องยึดตามลายลักษณ์อักษรของประมวลกฎหมายอย่างเคร่งครัดและเท่าเทียมกัน?",
+    "ความแน่นอนชัดเจนของตัวบทกฎหมาย สำคัญกว่าความคิดเห็นและมุมมองส่วนตัวของผู้พิพากษา?",
+    "สภาผู้แทนราษฎรควรเป็นผู้เดียวที่มีอำนาจออกกฎหมาย ไม่ใช่การสร้างกฎผ่านคำพิพากษาของศาล?",
+    "การพิจารณาคดีควรยึดตามเจตนารมณ์ตัวบทที่เขียนไว้ เพื่อป้องกันไม่ให้เกิดมาตรฐานสองระดับ?",
+    "ความชัดเจนของประมวลกฎหมาย ช่วยให้ประชาชนรู้ขอบเขตสิทธิและหน้าที่ของตนเองได้ดีที่สุด?"
+  ],
+  pun_rehb: [
+    "เมื่อใครทำผิดร้ายแรง เป้าหมายสูงสุดของคุกควรเป็นการสร้างความเจ็บปวดให้สาสม หรือคือการปรับเปลี่ยนความคิดให้เขากลับมาได้?",
+    "โทษประหารชีวิตเป็นสิ่งจำเป็น สำหรับการป้องปรามอาชญากรรมร้ายแรงและสร้างความยุติธรรมให้เหยื่อ?",
+    "บทลงโทษที่รุนแรงและเด็ดขาด คือเครื่องมือที่มีประสิทธิภาพที่สุดในการลดจำนวนอาชญากรรม?",
+    "สิทธิและความรู้สึกของผู้เสียหาย ควรได้รับการคุ้มครองและให้ความสำคัญมากกว่าสิทธิของผู้ต้องหา?",
+    "ผู้กระทำผิดร้ายแรง ควรได้รับความเจ็บปวดและชดใช้ความผิดในระดับที่สมน้ำสมเนื้อกับสิ่งที่ก่อ?",
+    "จุดประสงค์หลักของระบบยุติธรรม คือการฟื้นฟู ปรับปรุง และให้โอกาสผู้กระทำผิดกลับคืนสู่สังคม?",
+    "โทษประหารชีวิตเป็นการละเมิดสิทธิมนุษยชนขั้นร้ายแรง และควรถูกยกเลิกอย่างสิ้นเชิงในทุกกรณี?",
+    "อาชญากรรมส่วนใหญ่เกิดจากปัญหาโครงสร้างสังคมที่ล้มเหลว ซึ่งควรได้รับการแก้ไขที่ต้นตอ?",
+    "เรือนจำควรเป็นสถานที่สำหรับฝึกอาชีพและบำบัดจิตใจ มากกว่าการทรมานและลงโทษผู้ต้องขัง?",
+    "กระบวนการยุติธรรมเชิงสมานฉันท์ ช่วยสมานบาดแผลของเหยื่อและสังคมได้ดีกว่าการแก้แค้น?"
+  ],
+  cmpr_pers: [
+    "ในการขับเคลื่อนสังคม การยอมลดข้อเรียกร้องลงครึ่งหนึ่งเพื่อให้เกิดผลจริง กับการยืนหยัดไม่ถอยเลยแม้ไม่สำเร็จ ทางไหนน่าเคารพกว่า?",
+    "การรับฟังและพร้อมปรับตัวเข้าหาฝ่ายตรงข้าม ช่วยลดความขัดแย้งและสร้างผลงานได้ในระยะยาว?",
+    "ข้อตกลงที่ก้าวหน้าได้เพียงครึ่งเดียว ยังดีกว่าการไม่ได้อะไรเลยจากการดื้อดึงไม่ยอมถอย?",
+    "การเมืองคือศิลปะของความเป็นไปได้ ที่ผู้ขับเคลื่อนต้องพร้อมเจรจาและแลกเปลี่ยนเพื่อให้เดินหน้า?",
+    "การร่วมมือกับพรรคการเมืองหรือกลุ่มที่มีแนวคิดต่างกัน เป็นสิ่งจำเป็นในการบริหารประเทศ?",
+    "การยอมลดเพดานอุดมการณ์ คือการยึดติดผลประโยชน์ชั่วคราวและเป็นการ ทรยศต่อความถูกต้อง?",
+    "จุดยืนที่ชัดเจนและมั่นคง สำคัญกว่าการสร้างข้อตกลงที่คลุมเครือเพียงเพื่อเอาใจทุกคน?",
+    "การเจรจากับฝ่ายที่ละเมิดหลักการ เป็นการมอบความชอบธรรมให้แก่ความอยุติธรรมในสังคม?",
+    "อุดมการณ์รากฐานเป็นสิ่งที่ไม่สามารถนำมาซื้อขาย แลกเปลี่ยน หรือประนีประนอมทางการเมืองได้?",
+    "การยืนหยัดในความถูกต้องแม้อยู่ในเสียงส่วนน้อย ดีกว่าการประนีประนอมกับสิ่งที่ไม่ดี?"
+  ],
+  trns_dirc: [
+    "เมื่อกติกาไร้ความยุติธรรม การอดทนรอคอยการเปลี่ยนทีละขั้นเพื่อความปลอดภัย หรือการหักดิบเปลี่ยนทันทีโดยไม่สนความโกลาหล ควรทำมากกว่า?",
+    "การทดลองนำร่องในพื้นที่เล็กก่อนขยายผล เป็นวิธีแก้ไขสังคมที่ปลอดภัยและรอบคอบที่สุด?",
+    "สังคมต้องการเวลาในการปรับตัวและเรียนรู้ ก่อนที่จะสามารถรองรับโครงสร้างใหม่ทั้งหมดได้?",
+    "การเปลี่ยนแปลงอย่างฉับพลัน มักเปิดช่องให้กลุ่มฉวยโอกาสเข้ามายึดอำนาจและสร้างความวุ่นวาย?",
+    "การวางแผนระยะเปลี่ยนผ่านที่ชัดเจน ช่วยลดผลกระทบต่อเศรษฐกิจและชีวิตความเป็นอยู่ของประชาชน?",
+    "เมื่อระบบเดิมอยุติธรรม การเปลี่ยนแปลงต้องเกิดขึ้นทันทีโดยไม่ต้องรอขั้นตอนยืดหยุ่นยาวนาน?",
+    "มาตรการครึ่งๆ กลางๆ ไม่สามารถแก้ไขปัญหารากเหง้าเชิงโครงสร้างของสังคมได้อย่างจริงจัง?",
+    "ความอดทนรอคอยระบบที่ล้มเหลว คือการปล่อยให้ผู้คนถูกกดขี่และเสียโอกาสต่อไปเรื่อยๆ?",
+    "การรื้อถอนโครงสร้างเก่าทั้งหมดทันที ชอบธรรมกว่าการพยายามซ่อมแซมทีละนิดทีละหน่อย?",
+    "ระยะเปลี่ยนผ่านที่ยืดเยื้อ มักถูกใช้เป็นข้ออ้างในการหน่วงเหนี่ยวและยื้อการเปลี่ยนแปลงที่แท้จริง?"
+  ],
+  mod_rad: [
+    "ปัญหาใหญ่ของประเทศ แก้ไขได้ด้วยสายกลางที่ทุกฝ่ายพอใจ หรือต้องอาศัยความคิดรุนแรงขั้นถอนรากถอนโคนเพื่อทำลายต้นตอเดิม?",
+    "สายกลางมักสะท้อนความจริงที่ซับซ้อน ได้ดีกว่าการเลือกข้างสุดขั้วฝั่งใดฝั่งหนึ่ง?",
+    "การแสวงหาฉันทามติในวงกว้าง ดีกว่าการเอาชนะแบบเด็ดขาดของฝ่ายใดฝ่ายหนึ่งในสังคม?",
+    "ความสุดขั้วทางการเมือง ไม่ว่าจะมาจากฝั่งซ้ายหรือฝั่งขวา ล้วนเป็นอันตรายต่อสันติภาพ?",
+    "การบริหารจัดการสิ่งที่เป็นไปได้จริงในปัจจุบัน สำคัญกว่าการวิ่งไล่ตามภาพฝันสุดขอบ?",
+    "ปัญหารากเหง้าของสังคม จะแก้ไขได้ด้วยการรื้อถอนระบบเดิมอย่างสิ้นเชิงและถอนรากถอนโคนเท่านั้น?",
+    "ขบวนการทางสังคมควรตั้งเป้าหมายสูงสุดเอาไว้ โดยไม่ยอมลดเพดานการเรียกร้องลงมาเด็ดขาด?",
+    "การเผชิญหน้าและท้าทายโครงสร้างอำนาจอย่างตรงไปตรงมา เป็นความจำเป็นในการสร้างยุติธรรม?",
+    "การปฏิรูปภายในกรอบกฎหมายเดิม เป็นเพียงการผัดวันประกันพัก ไม่ใช่การแก้ไขปัญหาที่แท้จริง?",
+    "การถูกมองว่าเป็นพวกหัวรุนแรง ไม่ใช่สิ่งที่ต้องหวาดกลัวหากเป้าหมายของเราคือความยุติธรรม?"
+  ],
+  polz_apol: [
+    "การเป็นพลเมืองที่ดีคือการตื่นตัวและมีส่วนร่วมถกเถียงการเมืองในทุกมิติ หรือคือการตั้งใจทำงานส่วนตัวให้ดีโดยไมรนหาความขัดแย้ง?",
+    "ประชาชนทุกคนควรร่วมมือกันตื่นตัว และติดตามข่าวสารเรื่องการเมืองอย่างสม่ำเสมอ?",
+    "พื้นที่ส่วนตัวและวัฒนธรรม ล้วนเชื่อมโยงกับโครงสร้างอำนาจทางการเมืองอย่างหลีกเลี่ยงไม่ได้?",
+    "การแสดงจุดยืนทางการเมืองในพื้นที่สาธารณะ เป็นหน้าที่และคุณธรรมสำคัญของพลเมืองที่ดี?",
+    "เรื่องการเมืองควรเป็นหัวข้อสนทนาที่เปิดกว้าง และสามารถพูดคุยกันได้ในชีวิตประจำวัน?",
+    "ชีวิตที่ดีคือการมุ่งเน้นพัฒนาตนเองและงานตรงหน้า โดยไม่รนหาความขัดแย้งทางการเมือง?",
+    "การเมืองเป็นเรื่องของนักการเมือง ประชาชนทั่วไปควรโฟกัสที่การทำมาหากินส่วนตนเป็นหลัก?",
+    "การหลีกเลี่ยงการถกเถียงเรื่องการเมือง ช่วยรักษาความสัมพันธ์และสันติสุขส่วนตัวได้ดีกว่า?",
+    "สังคมจะสงบเรียบร้อยและน่าอยู่กว่า เมื่อคนส่วนใหญ่ไม่ถูกระดมเข้าสู่ความขัดแย้งทางการเมือง?",
+    "ความสุขส่วนตัวและความสำเร็จในครอบครัว วัดคุณค่าชีวิตได้ดีกว่าการเข้าไปมีส่วนร่วมทางการเมือง?"
+  ],
+  ind_col: [
+    "ถ้าความสุขของคนส่วนใหญ่ จำเป็นต้องแลกด้วยการยึดหรือจำกัดสิทธิบางอย่างของบุคคล การเสียสละประโยชน์ส่วนตนเพื่อส่วนรวมชอบธรรมไหม?",
+    "แต่ละบุคคลควรมีอิสระในการเลือกวิถีชีวิตตนเอง โดยไม่ถูกแรงกดดันจากกลุ่มหรือสังคมบังคับ?",
+    "ความรับผิดชอบส่วนบุคคลและการพึ่งพาตนเอง เป็นค่านิยมและคุณธรรมสูงสุดของมนุษย์?",
+    "สังคมไม่มีตัวตนอยู่จริง มีเพียงแค่บุคคลและครอบครัวที่ประกอบกันขึ้นมาเป็นประเทศ?",
+    "ปัจเจกบุคคลไม่ควรถูกบังคับให้เสียสละชีวิตหรือทรัพย์สิน เพื่อเป้าหมายของกลุ่มที่ตนไม่ได้เลือก?",
+    "ผลประโยชน์และเสถียรภาพของส่วนรวม ย่อมอยู่เหนือความประสงค์และสิทธิส่วนบุคคลเสมอ?",
+    "ความสำเร็จและความเป็นอันหนึ่งอันเดียวของชุมชน สำคัญกว่าเอกสิทธิ์และอิสรภาพส่วนบุคคล?",
+    "หน้าที่ต่อส่วนรวมและการรับใช้สังคม เป็นแกนกลางสำคัญที่สุดของจริยธรรมและการอยู่ร่วมกัน?",
+    "มนุษย์เป็นสัตว์สังคมที่ไม่สามารถแยกตัวอยู่รอด หรือมีความสุขได้โดยปราศจากกลุ่มก้อน?",
+    "การเสียสละประโยชน์ส่วนตนเพื่อความสุขของส่วนรวม เป็นคุณธรรมอันสูงส่งที่ทุกคนควรกระทำ?"
+  ],
+  rev_peace: [
+    "เมื่อเผชิญการกดขี่ที่ไร้ความชอบธรรม การต่อสู้ต้องยึดหลักสันติวิธีอหิงสาเท่านั้น หรือสิทธิในการใช้กำลังเข้าโต้ตอบเพื่อโค่นล้มชอบธรรม?",
+    "การลุกฮือของประชาชนเพื่อทำลายระบบการกดขี่ บางครั้งจำเป็นต้องใช้แรงต่อต้านที่รุนแรง?",
+    "การเปลี่ยนแปลงใหญ่ในประวัติศาสตร์ มักไม่เคยเกิดขึ้นจากการร้องขออย่างสุภาพเพียงอย่างเดียว?",
+    "ความรุนแรงของฝ่ายผู้ถูกกดขี่ เป็นเพียงปฏิกิริยาตอบโต้ต่อความรุนแรงเชิงโครงสร้างของรัฐ?",
+    "การถอนรากถอนโคนระบบเดิมด้วยการต่อสู้ สอดคล้องกับความเป็นจริงในประวัติศาสตร์มนุษย์?",
+    "การต่อสู้เรียกร้องต้องยึดหลักสันติวิธีและอหิงสาอย่างเด็ดขาด โดยไม่ใช้ความรุนแรงในทุกกรณี?",
+    "การใช้กำลังและการทำลายล้าง ทำลายความชอบธรรมและเป้าหมายของขบวนการเรียกร้อง?",
+    "ความรุนแรงไม่อาจนำไปสู่การสร้างความยุติธรรมและสันติภาพที่ยั่งยืนได้ในอนาคต?",
+    "การเจรจาและการต่อสู้ด้วยกระบวนการทางกฎหมาย เป็นทางออกเดียวที่ยอมรับได้ในสังคมเจริญแล้ว?",
+    "ความสูญเสียชีวิตและเลือดเนื้อจากความรุนแรง เป็นสิ่งที่ไม่อาจชดเชยได้ด้วยเป้าหมายทางการเมืองใดๆ?"
+  ],
+  ideal_real: [
+    "ยามตัดสินใจเรื่องสำคัญ เราควรมุ่งมั่นทำในสิ่งที่ถูกต้องตามอุดมคติแม้ยาก หรือเลือกทางที่ทำได้จริงตามการคำนวณดุลอำนาจเฉพาะหน้า?",
+    "สังคมควรมุ่งมั่นสร้างภาพอุดมคติแห่งความสมบูรณ์แบบ แม้มันจะดูไกลเกินเอื้อมในปัจจุบัน?",
+    "การประนีประนอมหลักการเพื่อแลกกับอำนาจหรือผลประโยชน์ ทำให้ระบบการเมืองเสื่อมทรามลง?",
+    "เราควรกระทำในสิ่งที่ถูกต้องตามหลักจริยธรรม โดยไม่หวั่นเกรงต่อผลลัพธ์ที่จะเกิดขึ้นในความเป็นจริง?",
+    "อุดมคติและความเชื่ออันบริสุทธิ์ คือพลังเดียวที่สามารถเปลี่ยนแปลงโลกใบนี้ให้ดีขึ้นได้จริง?",
+    "การเมืองคือเรื่องของการคำนวณดุลอำนาจและผลผลิตที่ทำได้จริง มากกว่าการฝันหวานถึงอุดมคติ?",
+    "เป้าหมายที่บรรลุได้บางส่วนในความเป็นจริง ดีกว่าอุดมคติที่สวยงามแต่ไม่อาจเกิดขึ้นได้จริง?",
+    "การยอมรับความจริงอันไม่สมบูรณ์ ดีกว่าการยึดติดอยู่กับภาพฝันที่ไร้ทางเป็นไปได้?",
+    "ผู้นำทางการเมืองที่ดี ต้องมองความเป็นจริงตามที่เป็น ไม่ใช่ตามสิ่งที่อยากจะให้เป็น?",
+    "ผลประโยชน์ทางยุทธศาสตร์และความอยู่รอด สำคัญกว่าความบริสุทธิ์ทางอุดมการณ์ทางการเมือง?"
+  ],
+  conseq_deont: [
+    "ความถูกต้องของการตัดสินใจ วัดกันที่ 'ผลลัพธ์สุทธิ' ว่าสร้างประโยชน์ให้คนส่วนใหญ่ได้มากแค่ไหน หรือวัดกันที่ 'หลักการและหน้าที่'?",
+    "เรายอมฝ่าฝืนกฎเกณฑ์บางข้อได้ หากการกระทำนั้นช่วยสร้างประโยชน์และความสุขแก่คนส่วนใหญ่ได้มากกว่า?",
+    "นโยบายที่ดีคือนโยบายที่ส่งผลดีรวมสูงสุด แม้จะสร้างความสูญเสียหรือความเสียสละให้แก่คนบางกลุ่ม?",
+    "การประเมินความถูกผิดของการกระทำ ควรพิจารณาที่ผลกระทบในชีวิตจริง มากกว่าเจตนาลึกล้ำ?",
+    "เป้าหมายที่ยิ่งใหญ่และสร้างประโยชน์รวม ย่อมสร้างความชอบธรรมให้แก่วิธีการที่นำมาใช้เสมอ?",
+    "มีหลักจริยธรรมบางอย่างที่เป็นหน้าที่สัมบูรณ์ ซึ่งห้ามละเมิดเด็ดขาด ไม่ว่าผลลัพธ์จะออกมาดีเพียงใด?",
+    "การทำร้ายหรือละเมิดสิทธิของผู้บริสุทธิ์ เป็นสิ่งที่ทำไม่ได้ แม้จะช่วยชีวิตคนอื่นได้อีกนับล้านคน?",
+    "หน้าที่และกติกาศีลธรรมต้องถูกรักษาไว้ โดยไม่คำนึงถึงผลกำไรหรือขาดทุนที่จะเกิดขึ้นในชีวิตจริง?",
+    "วิธีการที่ไม่ชอบธรรม ย่อมทำให้เป้าหมายที่ได้มาสูญเสียความบริสุทธิ์และความชอบธรรมไป?",
+    "ความยุติธรรมอยู่ที่การยึดมั่นในหลักการและหน้าที่ ไม่ใช่การคำนวณผลลัพธ์สุทธิทางเศรษฐกิจ?"
+  ]
+};
+
+// Generate full 260 question objects
+let qGlobalId = 1;
+axisList.forEach((axisKey, aIdx) => {
+  const catIdx = Math.floor(aIdx / 4) + 1;
+  const templates = dilemmaTemplates[axisKey];
+  templates.forEach((txt, tIdx) => {
+    const isPoleB = tIdx >= 5;
+    const tag = isPoleB ? DATA.axes[aIdx].pole_b.tag : DATA.axes[aIdx].pole_a.tag;
+    const pole = isPoleB ? "b" : "a";
+    rawQuestionsData.push({
+      cat: catIdx > 7 ? 7 : catIdx,
+      axis: axisKey,
+      tag: tag,
+      pole: pole,
+      text: txt
+    });
+  });
+});
 
 DATA.questions = rawQuestionsData.map((q, idx) => ({ id: idx + 1, ...q }));
 
@@ -797,12 +945,10 @@ function encodeAnswers(ansObj) {
   const bytes = new Uint8Array(total);
   for (let i = 1; i <= total; i++) {
     const val = ansObj[i] !== undefined ? ansObj[i] : 0;
-    bytes[i - 1] = val + 3; // แปลงช่วงคะแนน -3 ถึง 3 เป็น 0 ถึง 6
+    bytes[i - 1] = val + 3;
   }
   let binary = '';
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
   return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
@@ -812,213 +958,86 @@ function decodeAnswers(str) {
     while (base64.length % 4) base64 += '=';
     const binary = atob(base64);
     const ans = {};
-    for (let i = 0; i < binary.length; i++) {
-      ans[i + 1] = binary.charCodeAt(i) - 3; // ถอดรหัสกลับเป็นช่วงคะแนน -3 ถึง 3
-    }
+    for (let i = 0; i < binary.length; i++) ans[i + 1] = binary.charCodeAt(i) - 3;
     return ans;
   } catch (e) {
     return null;
   }
 }
 
-// MATCHING ALGORITHMS
 function getMatchingIdeology(pcts) {
   const userSocCap = pcts['soc_cap'] !== undefined ? pcts['soc_cap'] : 50;
   const userAuthLib = pcts['auth_lib'] !== undefined ? pcts['auth_lib'] : 50;
-
-  const scoreX = (userSocCap - 50) * 2; // -100 to 100 (Socialism to Capitalism)
-  const scoreY = (50 - userAuthLib) * 2; // -100 to 100 (Libertarianism to Authoritarianism)
+  const scoreX = (userSocCap - 50) * 2;
+  const scoreY = (50 - userAuthLib) * 2;
 
   let closest = DATA.heatMapPoints[0];
   let minDistance = Infinity;
-
   DATA.heatMapPoints.forEach(pt => {
     const dist = Math.sqrt(Math.pow(scoreX - pt.x, 2) + Math.pow(scoreY - pt.y, 2));
-    if (dist < minDistance) {
-      minDistance = dist;
-      closest = pt;
-    }
+    if (dist < minDistance) { minDistance = dist; closest = pt; }
   });
-
   return closest;
 }
 
 function getMatchingPhilosopher(pcts) {
   let closest = DATA.philosophers[0];
   let minDistance = Infinity;
-
   DATA.philosophers.forEach(ph => {
     const dSoc = Math.pow((pcts['soc_cap'] || 50) - ph.profile.soc_cap, 2);
     const dAuth = Math.pow((pcts['auth_lib'] || 50) - ph.profile.auth_lib, 2);
     const dMerit = Math.pow((pcts['merit_eq'] || 50) - ph.profile.merit_eq, 2);
     const dist = Math.sqrt(dSoc + dAuth + dMerit);
-
-    if (dist < minDistance) {
-      minDistance = dist;
-      closest = ph;
-    }
+    if (dist < minDistance) { minDistance = dist; closest = ph; }
   });
-
   return closest;
 }
 
 function detectInternalTensions(pcts) {
   const tensions = [];
-
-  // Tension 1: สังคมนิยมแต่สนับสนุนตลาดปล่อยเสรีอย่างสุดขั้ว
-  if (pcts['soc_cap'] < 40 && pcts['pln_mkt'] > 65) {
-    tensions.push("คุณต้องการการกระจายทรัพยากรแบบสังคมนิยม แต่สนับสนุนกลไกตลาดเสรีโดยไม่ให้รัฐกำกับดูแล");
-  }
-  // Tension 2: ประชาธิปไตยแต่เน้นย้ำอำนาจนิยมเบ็ดเสร็จ
-  if (pcts['dem_autc'] > 60 && pcts['auth_lib'] < 35) {
-    tensions.push("คุณสนับสนุนระบบสถาบันประชาธิปไตย แต่ในขณะเดียวกันก็ยอมรับการใช้อำนาจรัฐควบคุมเสรีภาพประชาชนอย่างเข้มงวด");
-  }
-  // Tension 3: ชาตินิยมแต่สนับสนุนโลกาภิวัตน์เสรี
-  if (pcts['glob_nat'] > 65 && pcts['univ_part'] < 35) {
-    tensions.push("คุณยึดถือผลประโยชน์ชาติและพรมแดนเป็นหลัก แต่เปิดรับสากลนิยมและสิทธิมนุษยชนแบบไม่มีเงื่อนไข");
-  }
-  // Tension 4: ก้าวหน้าแต่ต่อต้านการเร่งพัฒนาเทคโนโลยี
-  if (pcts['prog_trad'] < 35 && pcts['acc_dec'] > 65) {
-    tensions.push("คุณมีค่านิยมสังคมก้าวหน้าเปิดรับสิ่งใหม่ แต่กลับมีความกังวลและต้องการชะลอการเติบโตทางเทคโนโลยี");
-  }
-
+  if (pcts['soc_cap'] < 40 && pcts['pln_mkt'] > 65) tensions.push("คุณต้องการการกระจายทรัพยากรแบบสังคมนิยม แต่สนับสนุนกลไกตลาดเสรีโดยไม่ให้รัฐกำกับดูแล");
+  if (pcts['dem_autc'] > 60 && pcts['auth_lib'] < 35) tensions.push("คุณสนับสนุนระบบสถาบันประชาธิปไตย แต่ในขณะเดียวกันก็ยอมรับการใช้อำนาจรัฐควบคุมเสรีภาพประชาชนอย่างเข้มงวด");
+  if (pcts['glob_nat'] > 65 && pcts['univ_part'] < 35) tensions.push("คุณยึดถือผลประโยชน์ชาติและพรมแดนเป็นหลัก แต่เปิดรับสากลนิยมและสิทธิมนุษยชนแบบไม่มีเงื่อนไข");
+  if (pcts['prog_trad'] < 35 && pcts['acc_dec'] > 65) tensions.push("คุณมีค่านิยมสังคมก้าวหน้าเปิดรับสิ่งใหม่ แต่กลับมีความกังวลและต้องการชะลอการเติบโตทางเทคโนโลยี");
   return tensions;
 }
 
-// DRAWING FUNCTIONS
-function drawCompass2D(canvas, cSpec, pcts) {
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width, h = canvas.height;
-  const halfW = w / 2, halfH = h / 2;
+// DRAWER & UI UPDATES
+function renderDrawerItems() {
+  const container = document.getElementById('drawer-content');
+  container.innerHTML = '';
+  
+  let answeredCount = 0;
 
-  ctx.clearRect(0, 0, w, h);
+  DATA.questions.forEach((q, idx) => {
+    const isAns = answers[q.id] !== undefined;
+    if (isAns) answeredCount++;
 
-  // 4 Colored Quadrants
-  ctx.fillStyle = '#fce7f3'; ctx.fillRect(0, 0, halfW, halfH); // Top-Left: Pink
-  ctx.fillStyle = '#fef3c7'; ctx.fillRect(halfW, 0, halfW, halfH); // Top-Right: Yellow
-  ctx.fillStyle = '#dbeafe'; ctx.fillRect(0, halfH, halfW, halfH); // Bottom-Left: Blue
-  ctx.fillStyle = '#dcfce7'; ctx.fillRect(halfW, halfH, halfW, halfH); // Bottom-Right: Green
+    const item = document.createElement('div');
+    item.className = `drawer-q-item ${idx === currentIdx ? 'active' : ''} ${isAns ? 'answered' : ''}`;
+    item.onclick = () => {
+      currentIdx = idx;
+      updateQuestionUI();
+    };
 
-  // Crosshair Lines
-  ctx.strokeStyle = '#94a3b8';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(halfW, 0); ctx.lineTo(halfW, h);
-  ctx.moveTo(0, halfH); ctx.lineTo(w, halfH);
-  ctx.stroke();
+    let ansLabelHtml = '';
+    if (isAns) {
+      const val = answers[q.id];
+      const scaleObj = DATA.meta.scale.find(s => s.value === val);
+      if (scaleObj) {
+        ansLabelHtml = `<span class="ans-highlight-tag" style="background:${scaleObj.bg};">${scaleObj.label_th}</span>`;
+      }
+    }
 
-  // Axis Labels Text
-  ctx.fillStyle = '#1e293b';
-  ctx.font = 'bold 11px "Noto Sans Thai", sans-serif';
-  ctx.textAlign = 'center';
-
-  ctx.fillText(cSpec.top, halfW, 14);
-  ctx.fillText(cSpec.bottom, halfW, h - 6);
-  ctx.textAlign = 'left'; ctx.fillText(cSpec.left, 6, halfH - 6);
-  ctx.textAlign = 'right'; ctx.fillText(cSpec.right, w - 6, halfH - 6);
-
-  // User Dot Position calculation
-  const valX = pcts[cSpec.xAxis] !== undefined ? pcts[cSpec.xAxis] : 50;
-  const valY = pcts[cSpec.yAxis] !== undefined ? pcts[cSpec.yAxis] : 50;
-
-  const dotX = (valX / 100) * w;
-  const dotY = (valY / 100) * h;
-
-  // Red Dot with White Border
-  ctx.beginPath();
-  ctx.arc(dotX, dotY, 7, 0, Math.PI * 2);
-  ctx.fillStyle = '#dc2626';
-  ctx.fill();
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-}
-
-function drawHeatmap(canvas, pcts) {
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width, h = canvas.height;
-  const cx = w / 2, cy = h / 2;
-
-  ctx.clearRect(0, 0, w, h);
-
-  // Grid background
-  ctx.fillStyle = '#f8fafc';
-  ctx.fillRect(0, 0, w, h);
-
-  ctx.strokeStyle = '#cbd5e1';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(cx, 0); ctx.lineTo(cx, h);
-  ctx.moveTo(0, cy); ctx.lineTo(w, cy);
-  ctx.stroke();
-
-  // Axis Labels
-  ctx.fillStyle = '#475569';
-  ctx.font = 'bold 12px "Noto Sans Thai", sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText("อำนาจนิยม", cx, 20);
-  ctx.fillText("เสรีภาพนิยม", cx, h - 10);
-  ctx.textAlign = 'left'; ctx.fillText("สังคมนิยม", 12, cy - 8);
-  ctx.textAlign = 'right'; ctx.fillText("ทุนนิยม", w - 12, cy - 8);
-
-  // Ideology Points
-  DATA.heatMapPoints.forEach(pt => {
-    const px = cx + (pt.x / 100) * (cx - 35);
-    const py = cy - (pt.y / 100) * (cy - 35);
-
-    ctx.beginPath();
-    ctx.arc(px, py, 4.5, 0, Math.PI * 2);
-    ctx.fillStyle = '#475569';
-    ctx.fill();
-
-    ctx.fillStyle = '#334155';
-    ctx.font = '10px "Noto Sans Thai", sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(pt.name, px, py - 8);
+    item.innerHTML = `
+      <div class="q-item-num">ข้อที่ ${q.id} ${isAns ? '✓' : ''}</div>
+      <div class="q-item-text">${q.text}</div>
+      ${ansLabelHtml}
+    `;
+    container.appendChild(item);
   });
 
-  // User Point calculation
-  const userSocCap = pcts['soc_cap'] !== undefined ? pcts['soc_cap'] : 50;
-  const userAuthLib = pcts['auth_lib'] !== undefined ? pcts['auth_lib'] : 50;
-
-  const scoreX = (userSocCap - 50) * 2; // -100 to 100
-  const scoreY = (50 - userAuthLib) * 2; // -100 to 100
-
-  const userX = cx + (scoreX / 100) * (cx - 35);
-  const userY = cy - (scoreY / 100) * (cy - 35);
-
-  // Red Heatspot Radial Gradient Effect
-  const grad = ctx.createRadialGradient(userX, userY, 5, userX, userY, 75);
-  grad.addColorStop(0, 'rgba(220, 38, 38, 0.75)');
-  grad.addColorStop(0.4, 'rgba(239, 68, 68, 0.35)');
-  grad.addColorStop(1, 'rgba(239, 68, 68, 0)');
-
-  ctx.beginPath();
-  ctx.arc(userX, userY, 75, 0, Math.PI * 2);
-  ctx.fillStyle = grad;
-  ctx.fill();
-
-  // User Red Dot with White Ring
-  ctx.beginPath();
-  ctx.arc(userX, userY, 7, 0, Math.PI * 2);
-  ctx.fillStyle = '#dc2626';
-  ctx.fill();
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 2.5;
-  ctx.stroke();
-}
-
-// UI NAVIGATION & INTERACTION
-const introView = document.getElementById('intro-view');
-const questionView = document.getElementById('question-view');
-const resultView = document.getElementById('result-view');
-
-function showView(v) {
-  introView.style.display = 'none';
-  questionView.style.display = 'none';
-  resultView.style.display = 'none';
-  v.style.display = 'block';
-  window.scrollTo(0,0);
+  document.getElementById('answered-count-badge').innerText = `${answeredCount}/260`;
 }
 
 function updateQuestionUI() {
@@ -1036,15 +1055,25 @@ function updateQuestionUI() {
   const container = document.getElementById('options-container');
   container.innerHTML = '';
 
+  const prevAnswerVal = answers[q.id];
+
   DATA.meta.scale.forEach(s => {
     const btn = document.createElement('button');
     btn.className = 'option-btn';
     btn.style.backgroundColor = s.bg;
     btn.style.color = s.fg;
     btn.innerText = s.label_th;
+
+    // Highlight previous answer prominently
+    if (prevAnswerVal !== undefined && prevAnswerVal === s.value) {
+      btn.classList.add('selected-prev');
+    }
+
     btn.onclick = () => selectOption(s.value);
     container.appendChild(btn);
   });
+
+  renderDrawerItems();
 }
 
 function selectOption(val) {
@@ -1059,6 +1088,108 @@ function selectOption(val) {
   }
 }
 
+// DRAWING CANVASES
+function drawCompass2D(canvas, cSpec, pcts) {
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const halfW = w / 2, halfH = h / 2;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = '#fce7f3'; ctx.fillRect(0, 0, halfW, halfH);
+  ctx.fillStyle = '#fef3c7'; ctx.fillRect(halfW, 0, halfW, halfH);
+  ctx.fillStyle = '#dbeafe'; ctx.fillRect(0, halfH, halfW, halfH);
+  ctx.fillStyle = '#dcfce7'; ctx.fillRect(halfW, halfH, halfW, halfH);
+
+  ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(halfW, 0); ctx.lineTo(halfW, h);
+  ctx.moveTo(0, halfH); ctx.lineTo(w, halfH);
+  ctx.stroke();
+
+  ctx.fillStyle = '#1e293b';
+  ctx.font = 'bold 11px "Noto Sans Thai", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(cSpec.top, halfW, 14);
+  ctx.fillText(cSpec.bottom, halfW, h - 6);
+  ctx.textAlign = 'left'; ctx.fillText(cSpec.left, 6, halfH - 6);
+  ctx.textAlign = 'right'; ctx.fillText(cSpec.right, w - 6, halfH - 6);
+
+  const valX = pcts[cSpec.xAxis] !== undefined ? pcts[cSpec.xAxis] : 50;
+  const valY = pcts[cSpec.yAxis] !== undefined ? pcts[cSpec.yAxis] : 50;
+  const dotX = (valX / 100) * w;
+  const dotY = (valY / 100) * h;
+
+  ctx.beginPath();
+  ctx.arc(dotX, dotY, 7, 0, Math.PI * 2);
+  ctx.fillStyle = '#dc2626'; ctx.fill();
+  ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
+}
+
+function drawHeatmap(canvas, pcts) {
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const cx = w / 2, cy = h / 2;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, w, h);
+
+  ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(cx, 0); ctx.lineTo(cx, h);
+  ctx.moveTo(0, cy); ctx.lineTo(w, cy);
+  ctx.stroke();
+
+  ctx.fillStyle = '#475569';
+  ctx.font = 'bold 12px "Noto Sans Thai", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText("อำนาจนิยม", cx, 20);
+  ctx.fillText("เสรีภาพนิยม", cx, h - 10);
+  ctx.textAlign = 'left'; ctx.fillText("สังคมนิยม", 12, cy - 8);
+  ctx.textAlign = 'right'; ctx.fillText("ทุนนิยม", w - 12, cy - 8);
+
+  DATA.heatMapPoints.forEach(pt => {
+    const px = cx + (pt.x / 100) * (cx - 35);
+    const py = cy - (pt.y / 100) * (cy - 35);
+    ctx.beginPath(); ctx.arc(px, py, 4.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#475569'; ctx.fill();
+    ctx.fillStyle = '#334155'; ctx.font = '10px "Noto Sans Thai", sans-serif';
+    ctx.textAlign = 'center'; ctx.fillText(pt.name, px, py - 8);
+  });
+
+  const userSocCap = pcts['soc_cap'] !== undefined ? pcts['soc_cap'] : 50;
+  const userAuthLib = pcts['auth_lib'] !== undefined ? pcts['auth_lib'] : 50;
+  const scoreX = (userSocCap - 50) * 2;
+  const scoreY = (50 - userAuthLib) * 2;
+  const userX = cx + (scoreX / 100) * (cx - 35);
+  const userY = cy - (scoreY / 100) * (cy - 35);
+
+  const grad = ctx.createRadialGradient(userX, userY, 5, userX, userY, 75);
+  grad.addColorStop(0, 'rgba(220, 38, 38, 0.75)');
+  grad.addColorStop(0.4, 'rgba(239, 68, 68, 0.35)');
+  grad.addColorStop(1, 'rgba(239, 68, 68, 0)');
+
+  ctx.beginPath(); ctx.arc(userX, userY, 75, 0, Math.PI * 2);
+  ctx.fillStyle = grad; ctx.fill();
+
+  ctx.beginPath(); ctx.arc(userX, userY, 7, 0, Math.PI * 2);
+  ctx.fillStyle = '#dc2626'; ctx.fill();
+  ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.stroke();
+}
+
+// NAVIGATION
+const introView = document.getElementById('intro-view');
+const questionView = document.getElementById('question-view');
+const resultView = document.getElementById('result-view');
+const drawer = document.getElementById('drawer');
+
+function showView(v) {
+  introView.style.display = 'none';
+  questionView.style.display = 'none';
+  resultView.style.display = 'none';
+  v.style.display = 'block';
+  window.scrollTo(0,0);
+}
+
 function showToast(msg) {
   const toast = document.getElementById('toast');
   toast.innerText = msg;
@@ -1066,9 +1197,18 @@ function showToast(msg) {
   setTimeout(() => { toast.style.display = 'none'; }, 2500);
 }
 
-// BUTTON ACTIONS
+// EVENT HANDLERS
+document.getElementById('drawer-toggle').onclick = () => {
+  drawer.classList.toggle('open');
+  document.getElementById('drawer-toggle').innerText = drawer.classList.contains('open') ? '◀' : '▶';
+};
+
 document.getElementById('prev-btn').onclick = () => {
   if(currentIdx > 0) { currentIdx--; updateQuestionUI(); }
+};
+
+document.getElementById('next-btn').onclick = () => {
+  if(currentIdx < 259) { currentIdx++; updateQuestionUI(); }
 };
 
 document.getElementById('start-btn').onclick = () => {
@@ -1089,7 +1229,7 @@ document.getElementById('resume-btn').onclick = () => {
   }
 };
 
-// Action 1: Copy Link
+// 3 Core Action Buttons
 document.getElementById('share-btn').onclick = () => {
   const hash = encodeAnswers(answers);
   const shareUrl = `${window.location.origin}${window.location.pathname}#d=${hash}`;
@@ -1100,23 +1240,18 @@ document.getElementById('share-btn').onclick = () => {
   });
 };
 
-// Action 2: Print / PDF
-document.getElementById('print-btn').onclick = () => {
-  window.print();
-};
+document.getElementById('print-btn').onclick = () => { window.print(); };
 
-// Action 3: Retake Survey (Reset immediately to Q1)
 document.getElementById('retake-btn').onclick = () => {
   localStorage.removeItem('pcs_260_full_draft');
-  answers = {};
-  currentIdx = 0;
+  answers = {}; currentIdx = 0;
   showView(questionView);
   updateQuestionUI();
   showToast("ล้างข้อมูลเรียบร้อยแล้ว เริ่มทำแบบสำรวจใหม่");
 };
 
 function finishSurvey() {
-  localStorage.removeItem('pcs_260_full_draft'); // ลบร่างค้างเมื่อทำจบแล้ว
+  localStorage.removeItem('pcs_260_full_draft');
   const { pcts, consistencyScore, radicalismPct } = calculateAxisScores(answers);
   renderResults(pcts, consistencyScore, radicalismPct);
   showView(resultView);
@@ -1129,7 +1264,6 @@ function renderResults(pcts, consistencyScore, radicalismPct) {
   document.getElementById('metric-radicalism').innerText = `${radicalismPct}%`;
   document.getElementById('desc-radicalism').innerText = radicalismPct > 50 ? "คุณมีจุดยืนชัดเจนเด็ดขาดในหลายแกน" : "คุณมีจุดยืนสายกลางประนีประนอมเป็นหลัก";
 
-  // Render 10 2D Compasses
   const compContainer = document.getElementById('compasses-container');
   compContainer.innerHTML = '';
   DATA.compasses.forEach(c => {
@@ -1140,30 +1274,24 @@ function renderResults(pcts, consistencyScore, radicalismPct) {
       <canvas id="canvas-comp-${c.id}" class="compass-canvas" width="230" height="230"></canvas>
     `;
     compContainer.appendChild(card);
-
     setTimeout(() => {
       const cvs = document.getElementById(`canvas-comp-${c.id}`);
       if(cvs) drawCompass2D(cvs, c, pcts);
     }, 50);
   });
 
-  // Render Heatmap
-  const heatCanvas = document.getElementById('heatmap-canvas');
-  drawHeatmap(heatCanvas, pcts);
+  drawHeatmap(document.getElementById('heatmap-canvas'), pcts);
 
-  // Render Dynamic Ideology Match
   const matchIdeo = getMatchingIdeology(pcts);
   document.getElementById('match-name-th').innerText = matchIdeo.name;
   document.getElementById('match-name-en').innerText = matchIdeo.name_en;
   document.getElementById('match-blurb').innerText = matchIdeo.blurb;
 
-  // Render Dynamic Philosopher Match
   const philo = getMatchingPhilosopher(pcts);
   document.getElementById('philo-name').innerText = philo.name_th;
   document.getElementById('philo-quote').innerText = `"${philo.quote}"`;
   document.getElementById('philo-desc').innerText = philo.desc;
 
-  // Render Internal Tension
   const tensionsContainer = document.getElementById('tensions-container');
   tensionsContainer.innerHTML = '';
   const tensions = detectInternalTensions(pcts);
@@ -1176,16 +1304,12 @@ function renderResults(pcts, consistencyScore, radicalismPct) {
     });
   } else {
     const box = document.createElement('div');
-    box.style.color = '#15803d';
-    box.style.background = '#f0fdf4';
-    box.style.padding = '16px';
-    box.style.borderRadius = '8px';
-    box.style.border = '1px solid #bbf7d0';
+    box.style.color = '#15803d'; box.style.background = '#f0fdf4';
+    box.style.padding = '16px'; box.style.borderRadius = '8px'; box.style.border = '1px solid #bbf7d0';
     box.innerText = "ไม่พบจุดย้อนแย้งเชิงตรรกะที่เด่นชัด ระบบคิดของคุณมีความสอดคล้องสูงในทุกมิติ";
     tensionsContainer.appendChild(box);
   }
 
-  // Render Bars Spectrum
   const barsContainer = document.getElementById('bars-container');
   barsContainer.innerHTML = '';
   DATA.axes.forEach(ax => {
@@ -1208,24 +1332,18 @@ function renderResults(pcts, consistencyScore, radicalismPct) {
 }
 
 window.onload = () => {
-  // ตรวจสอบรหัสผลลัพธ์จาก URL (#d=...)
   const hash = window.location.hash;
   if (hash && hash.startsWith('#d=')) {
-    const encoded = hash.replace('#d=', '');
-    const decodedAnswers = decodeAnswers(encoded);
+    const decodedAnswers = decodeAnswers(hash.replace('#d=', ''));
     if (decodedAnswers) {
       answers = decodedAnswers;
       finishSurvey();
       return;
     }
   }
-  // ตรวจสอบร่างแบบสำรวจที่ทำค้างไว้
   const draft = localStorage.getItem('pcs_260_full_draft');
-  if (draft) {
-    document.getElementById('resume-btn').style.display = 'block';
-  }
+  if (draft) document.getElementById('resume-btn').style.display = 'block';
 };
-
 </script>
 </body>
 </html>
